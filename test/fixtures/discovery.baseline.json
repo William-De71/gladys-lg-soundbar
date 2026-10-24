@@ -1,0 +1,662 @@
+{
+  "devices": {
+    "sp8ya": {
+      "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60",
+      "should_poll": false,
+      "params": ["LG_SOUNDBAR_HOST", "LG_SOUNDBAR_MODEL"],
+      "features": [
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:power",
+          "category": "television",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:volume",
+          "category": "television",
+          "type": "volume",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:mute",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:source",
+          "category": "text",
+          "type": "select",
+          "min": 0,
+          "max": 0,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:sound_mode",
+          "category": "text",
+          "type": "select",
+          "min": 0,
+          "max": 0,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:night_mode",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:auto_volume",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:drc",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:auto_power",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:woofer_level",
+          "category": "television",
+          "type": "volume",
+          "unit": "decibel",
+          "min": -15,
+          "max": 6,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:rear_level",
+          "category": "television",
+          "type": "volume",
+          "unit": "decibel",
+          "min": -6,
+          "max": 6,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:center_level",
+          "category": "television",
+          "type": "volume",
+          "unit": "decibel",
+          "min": -6,
+          "max": 6,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:top_level",
+          "category": "television",
+          "type": "volume",
+          "unit": "decibel",
+          "min": -6,
+          "max": 6,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:playback",
+          "category": "music",
+          "type": "playback_state",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:title",
+          "category": "text",
+          "type": "text",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:artist",
+          "category": "text",
+          "type": "text",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        }
+      ]
+    },
+    "s90qy": {
+      "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60",
+      "should_poll": false,
+      "params": ["LG_SOUNDBAR_HOST", "LG_SOUNDBAR_MODEL"],
+      "features": [
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:power",
+          "category": "television",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:volume",
+          "category": "television",
+          "type": "volume",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:mute",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:source",
+          "category": "text",
+          "type": "select",
+          "min": 0,
+          "max": 0,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:sound_mode",
+          "category": "text",
+          "type": "select",
+          "min": 0,
+          "max": 0,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:night_mode",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:auto_volume",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:drc",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:auto_power",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:woofer_level",
+          "category": "television",
+          "type": "volume",
+          "unit": "decibel",
+          "min": -15,
+          "max": 6,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:rear_level",
+          "category": "television",
+          "type": "volume",
+          "unit": "decibel",
+          "min": -6,
+          "max": 6,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:center_level",
+          "category": "television",
+          "type": "volume",
+          "unit": "decibel",
+          "min": -6,
+          "max": 6,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:top_level",
+          "category": "television",
+          "type": "volume",
+          "unit": "decibel",
+          "min": -6,
+          "max": 6,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:playback",
+          "category": "music",
+          "type": "playback_state",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:title",
+          "category": "text",
+          "type": "text",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:artist",
+          "category": "text",
+          "type": "text",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:audio_signal",
+          "category": "text",
+          "type": "text",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        }
+      ]
+    },
+    "minimal": {
+      "external_id": "ext:test-integration:soundbar:ip-192-168-1-22",
+      "should_poll": false,
+      "params": ["LG_SOUNDBAR_HOST", "LG_SOUNDBAR_MODEL"],
+      "features": [
+        {
+          "external_id": "ext:test-integration:soundbar:ip-192-168-1-22:power",
+          "category": "television",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:ip-192-168-1-22:volume",
+          "category": "television",
+          "type": "volume",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:ip-192-168-1-22:mute",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        }
+      ]
+    }
+  },
+  "manifest": {
+    "config_schema": [
+      {
+        "key": "intro",
+        "type": "section"
+      },
+      {
+        "key": "hosts",
+        "type": "string"
+      },
+      {
+        "key": "network_search",
+        "type": "boolean"
+      },
+      {
+        "key": "quiet_start",
+        "type": "boolean"
+      },
+      {
+        "key": "language",
+        "type": "select"
+      }
+    ],
+    "actions": ["search"],
+    "action_fields": {
+      "search": []
+    },
+    "widgets": [
+      {
+        "key": "soundbar",
+        "settings": ["soundbar"],
+        "options": {}
+      }
+    ],
+    "scene_triggers": [
+      {
+        "key": "source_changed",
+        "fields": [
+          {
+            "key": "soundbar",
+            "options": []
+          },
+          {
+            "key": "source",
+            "options": [
+              "func-0",
+              "func-1",
+              "func-2",
+              "func-3",
+              "func-4",
+              "func-5",
+              "func-6",
+              "func-7",
+              "func-8",
+              "func-9",
+              "func-10",
+              "func-11",
+              "func-12",
+              "func-13",
+              "func-14",
+              "func-15",
+              "func-16",
+              "func-17",
+              "func-18",
+              "func-19",
+              "func-20",
+              "func-21"
+            ]
+          }
+        ],
+        "variables": [
+          {
+            "key": "soundbar",
+            "type": "string"
+          },
+          {
+            "key": "source",
+            "type": "string"
+          },
+          {
+            "key": "source_name",
+            "type": "string"
+          },
+          {
+            "key": "previous_source_name",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "sound_mode_changed",
+        "fields": [
+          {
+            "key": "soundbar",
+            "options": []
+          },
+          {
+            "key": "sound_mode",
+            "options": [
+              "eq-0",
+              "eq-1",
+              "eq-2",
+              "eq-3",
+              "eq-4",
+              "eq-5",
+              "eq-6",
+              "eq-7",
+              "eq-8",
+              "eq-9",
+              "eq-10",
+              "eq-11",
+              "eq-12",
+              "eq-13",
+              "eq-14",
+              "eq-15",
+              "eq-16",
+              "eq-17",
+              "eq-18",
+              "eq-19",
+              "eq-20",
+              "eq-21",
+              "eq-22",
+              "eq-23",
+              "eq-24",
+              "eq-25",
+              "eq-26"
+            ]
+          }
+        ],
+        "variables": [
+          {
+            "key": "soundbar",
+            "type": "string"
+          },
+          {
+            "key": "sound_mode",
+            "type": "string"
+          },
+          {
+            "key": "sound_mode_name",
+            "type": "string"
+          },
+          {
+            "key": "previous_sound_mode_name",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "track_changed",
+        "fields": [
+          {
+            "key": "soundbar",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "soundbar",
+            "type": "string"
+          },
+          {
+            "key": "title",
+            "type": "string"
+          },
+          {
+            "key": "artist",
+            "type": "string"
+          },
+          {
+            "key": "stream",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "soundbar_offline",
+        "fields": [
+          {
+            "key": "soundbar",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "soundbar",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "soundbar_online",
+        "fields": [
+          {
+            "key": "soundbar",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "soundbar",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "scene_actions": [
+      {
+        "key": "apply_sound_preset",
+        "fields": ["soundbar", "source", "sound_mode", "night_mode", "volume"],
+        "options": {
+          "source": [
+            "func-0",
+            "func-1",
+            "func-2",
+            "func-3",
+            "func-4",
+            "func-5",
+            "func-6",
+            "func-7",
+            "func-8",
+            "func-9",
+            "func-10",
+            "func-11",
+            "func-12",
+            "func-13",
+            "func-14",
+            "func-15",
+            "func-16",
+            "func-17",
+            "func-18",
+            "func-19",
+            "func-20",
+            "func-21"
+          ],
+          "sound_mode": [
+            "eq-0",
+            "eq-1",
+            "eq-2",
+            "eq-3",
+            "eq-4",
+            "eq-5",
+            "eq-6",
+            "eq-7",
+            "eq-8",
+            "eq-9",
+            "eq-10",
+            "eq-11",
+            "eq-12",
+            "eq-13",
+            "eq-14",
+            "eq-15",
+            "eq-16",
+            "eq-17",
+            "eq-18",
+            "eq-19",
+            "eq-20",
+            "eq-21",
+            "eq-22",
+            "eq-23",
+            "eq-24",
+            "eq-25",
+            "eq-26"
+          ],
+          "night_mode": ["unchanged", "on", "off"]
+        },
+        "outputs": [
+          {
+            "key": "volume",
+            "type": "number"
+          },
+          {
+            "key": "source_name",
+            "type": "string"
+          },
+          {
+            "key": "sound_mode_name",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "change_volume",
+        "fields": ["soundbar", "step"],
+        "options": {},
+        "outputs": [
+          {
+            "key": "volume",
+            "type": "number"
+          }
+        ]
+      }
+    ]
+  }
+}

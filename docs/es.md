@@ -1,0 +1,79 @@
+# LG Soundbar
+
+## Presentación
+
+Esta integración lleva sus **barras de sonido LG Wi-Fi** a Gladys: los modelos configurados con la app **LG Sound Bar** (o **Wi-Fi Speaker**). Les habla en su red local, con el protocolo de esa app (puerto TCP 9741): sin cuenta, sin nube, nada sale de su red.
+
+Para cada barra de sonido: encendido, volumen, silencio, entrada, modo de sonido, modo noche, niveles de los altavoces y, cuando se le transmite música, la canción en curso. Un cambio hecho con el mando, la TV o la app de LG aparece en Gladys en menos de un segundo, y sus escenas pueden reaccionar.
+
+La integración no está afiliada a LG y aún no se ha probado con una barra de sonido real: cuéntenos lo que hace su modelo.
+
+## Requisitos
+
+- Gladys Assistant 5.1.0 o posterior.
+- La barra de sonido configurada en la app LG Sound Bar / Wi-Fi Speaker, conectada a la misma red que Gladys. Algunos modelos recientes controlados solo con **LG ThinQ** no abren el puerto 9741 y no pueden funcionar.
+- Idealmente, una dirección IP fija para la barra de sonido (una reserva DHCP en su router).
+
+## Configuración
+
+| Campo                                 | Por defecto | Función                                                                                                                                                                                              |
+| ------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Direcciones IP                        | vacío       | Para las barras de sonido que la búsqueda no encuentra (otra subred, una red que bloquea el multicast). Sepárelas con comas.                                                                         |
+| Buscar en la red                      | activado    | Busca las barras de sonido (mDNS, anuncios de LG y Chromecast) en cada búsqueda de la pestaña Descubrir, y cuando una barra de sonido deja de responder.                                             |
+| No despertar nunca la barra de sonido | desactivado | Una barra de sonido en espera se enciende cuando se le pregunta algo. Active esta opción si la suya se enciende cuando Gladys se reinicia: el estado solo se conocerá por sus cambios y sus órdenes. |
+| Idioma de los nombres                 | inglés      | Nombres de las funciones, entradas, modos de sonido y textos de las escenas.                                                                                                                         |
+
+Pulse **Buscar y probar las barras de sonido**: lista cada barra de sonido encontrada con su dirección, su modelo y si está conectada.
+
+## Uso
+
+### Dispositivos
+
+Abra la pestaña **Descubrir** de la integración y añada su barra de sonido. Sus funciones dependen del modelo:
+
+| Función                                                                        | Notas                                                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Encendido                                                                      | Indicado por los modelos recientes. En los demás es **supuesto**: la última orden, encendida cuando se usa la barra de sonido, apagada cuando está inaccesible. Algunos modelos ignoran el apagado enviado por la red. |
+| Volumen                                                                        | De 0 al máximo de la barra de sonido (a menudo 40).                                                                                                                                                                    |
+| Silencio                                                                       | Activado = sin sonido.                                                                                                                                                                                                 |
+| Entrada                                                                        | Las entradas que lista la barra de sonido. E-ARC aparece como «Óptica / HDMI ARC» cuando solo esta está en la lista, como en la app de LG.                                                                             |
+| Modo de sonido                                                                 | Los modos de sonido que lista la barra de sonido.                                                                                                                                                                      |
+| Modo noche, volumen automático, compresión dinámica, encendido automático      | Cuando el modelo los tiene.                                                                                                                                                                                            |
+| Niveles del subwoofer, altavoces traseros, canal central, altavoces verticales | En dB, dentro del rango de la barra de sonido.                                                                                                                                                                         |
+| Reproducción, canción, artista                                                 | Solo para la música transmitida a la barra de sonido (Chromecast, AirPlay, Spotify Connect…).                                                                                                                          |
+| Señal de audio                                                                 | Modelos recientes: «DOLBY AUDIO», «PCM», «NO SIGNAL».                                                                                                                                                                  |
+
+### Widget del panel
+
+![El widget Barra de sonido LG: una barra de sonido usada con la TV y otra que reproduce música por AirPlay con su portada (ilustración generada, no una captura de pantalla)](https://raw.githubusercontent.com/William-De71/gladys-lg-soundbar/main/docs/assets/widgets.es.png)
+
+El widget **Barra de sonido LG** muestra el volumen, el nivel del subwoofer, el encendido, la entrada, el modo de sonido, el modo noche, la señal de audio y, en streaming, la canción con su portada. Sus botones bajan o suben el volumen, silencian y encienden o apagan la barra de sonido. Elija la barra de sonido en sus ajustes (la primera por defecto). La imagen de arriba es una ilustración generada, no una captura de pantalla.
+
+### Escenas
+
+Disparadores (solo para cambios hechos fuera de Gladys: mando, TV, app de LG):
+
+- **Barra de sonido LG: entrada cambiada** — filtro por las nuevas entradas; variables: entrada, entrada anterior.
+- **Barra de sonido LG: modo de sonido cambiado** — filtro por los nuevos modos de sonido.
+- **Barra de sonido LG: nueva canción** — título, artista y cómo se transmite.
+- **Barra de sonido LG: inaccesible** — ninguna conexión desde hace 2 minutos (desenchufada, corte de luz, nueva dirección).
+- **Barra de sonido LG: de nuevo accesible**.
+
+Para el encendido, el volumen o el silencio, use el disparador habitual «cambio de estado de un dispositivo».
+
+Acciones:
+
+- **Barra de sonido LG: aplicar un ajuste de sonido** — entrada, modo de sonido, modo noche y volumen de una vez; los campos vacíos no cambian.
+- **Barra de sonido LG: cambiar el volumen** — un número de pasos desde el volumen actual (−5 baja 5).
+
+Ejemplos: cuando la entrada pasa a Bluetooth, apagar la TV; a las 22 h, aplicar «Cine, modo noche activado, volumen 12»; cuando suena el teléfono, bajar el volumen 8.
+
+## Solución de problemas
+
+- **No se encuentra ninguna barra de sonido**: compruebe que está encendida y en la app de LG, en la misma red que Gladys. Escriba su dirección IP en la configuración. Pulse **Buscar y probar las barras de sonido**: «ninguna barra de sonido ha respondido en el puerto 9741» significa que está inaccesible o que el modelo no tiene este protocolo.
+- **La barra de sonido se enciende cuando Gladys se reinicia**: active **No despertar nunca la barra de sonido**.
+- **El apagado no hace nada**: algunos modelos (SP11RA, DSN10YG según informes de Home Assistant) lo ignoran por la red; la integración se lo indica cuando la barra de sonido dice que sigue encendida.
+- **Encendido siempre «Encendida (supuesto)»**: su modelo no indica su estado; se deduce.
+- **Las órdenes dejan de funcionar mientras la app de LG o Home Assistant están conectados**: cierre el otro cliente.
+- **Un modo de sonido o una entrada tiene un número en lugar de un nombre**: su modelo indica uno que la integración aún no conoce; funciona igualmente. Abra una incidencia con su número y el nombre que muestra la app de LG.
+- Para informar de un problema, indique las versiones de Gladys y de la integración, el modelo y el firmware de la barra de sonido, y los registros con `DEBUG=gladys-integration-sdk`.

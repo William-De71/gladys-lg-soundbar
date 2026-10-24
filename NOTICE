@@ -1,0 +1,24 @@
+Gladys LG Soundbar integration
+Copyright 2026 William Deren
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It controls LG Wi-Fi soundbars on the local network of the user over the
+protocol of the LG Sound Bar / Wi-Fi Speaker app. This integration is not
+affiliated with nor endorsed by LG Electronics; LG is a trademark of LG
+Electronics.
+
+The protocol (framing, AES-256-CBC key and IV, messages and fields) was
+rewritten from python-temescal (https://github.com/google/python-temescal,
+Copyright 2018 Google LLC, Apache License 2.0; version 0.5 published on PyPI
+from https://github.com/mjg59/python-temescal). No code is copied: the
+JavaScript implementation in src/temescal/ is a rewrite, and the names of the
+inputs and sound modes come from the tables of that library and of two pull
+requests of mjg59/python-temescal (#2, #3).
+
+What real soundbars report was taken from the Home Assistant "lg_soundbar"
+integration and its issues (https://github.com/home-assistant/core, Apache
+License 2.0), from the captures published by albaintor/integration-lgsoundbar
+(MPL-2.0, data only) and from lgsb2mqtt (https://github.com/hobbyquaker/lgsb2mqtt,
+MIT License: speaker levels as an offset from their minimum, Chromecast
+discovery, plain JSON answers). No code is taken from them.

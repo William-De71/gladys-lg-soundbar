@@ -1,0 +1,1701 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "LG Soundbar",
+  "description": {
+    "en": "LG Wi-Fi soundbars on the local network: power, volume, input, sound mode and scenes.",
+    "fr": "Barres de son LG Wi-Fi en local : marche, volume, source, mode sonore et scènes.",
+    "de": "LG-WLAN-Soundbars lokal: Ein/Aus, Lautstärke, Eingang, Klangmodus und Szenen.",
+    "es": "Barras de sonido LG Wi-Fi en local: encendido, volumen, entrada, modo de sonido y escenas."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/william-de71/gladys-lg-soundbar:0.1.0",
+  "gladys_version": ">=5.1.0",
+  "categories": ["multimedia"],
+  "cover_image": "https://raw.githubusercontent.com/William-De71/gladys-lg-soundbar/main/cover.jpg",
+  "transports": ["local"],
+  "network_discovery": [
+    {
+      "type": "mdns",
+      "service": "_lg-smart-device._tcp"
+    },
+    {
+      "type": "mdns",
+      "service": "_googlecast._tcp"
+    }
+  ],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Before you start",
+        "fr": "Avant de commencer",
+        "de": "Bevor du beginnst",
+        "es": "Antes de empezar"
+      },
+      "description": {
+        "en": "For the LG Wi-Fi soundbars set up with the LG Sound Bar (or Wi-Fi Speaker) app, which answer on port 9741 of the local network: no account, no pairing, nothing goes through the cloud. Connect the soundbar to the same network as Gladys in the LG app, then open the Discover tab. Some recent models controlled only by LG ThinQ do not open this port.",
+        "fr": "Pour les barres de son LG Wi-Fi configurées avec l’appli LG Sound Bar (ou Wi-Fi Speaker), qui répondent sur le port 9741 du réseau local : ni compte, ni appairage, rien ne passe par le cloud. Connectez la barre de son au même réseau que Gladys dans l’appli LG, puis ouvrez l’onglet Découverte. Certains modèles récents pilotés uniquement par LG ThinQ n’ouvrent pas ce port.",
+        "de": "Für die LG-WLAN-Soundbars, die mit der App LG Sound Bar (oder Wi-Fi Speaker) eingerichtet sind und im lokalen Netzwerk auf Port 9741 antworten: kein Konto, keine Kopplung, nichts läuft über die Cloud. Verbinde die Soundbar in der LG-App mit demselben Netzwerk wie Gladys und öffne dann den Tab Entdecken. Manche neuen Modelle, die nur über LG ThinQ gesteuert werden, öffnen diesen Port nicht.",
+        "es": "Para las barras de sonido LG Wi-Fi configuradas con la app LG Sound Bar (o Wi-Fi Speaker), que responden en el puerto 9741 de la red local: sin cuenta ni emparejamiento, nada pasa por la nube. Conecte la barra de sonido a la misma red que Gladys en la app de LG y abra la pestaña Descubrir. Algunos modelos recientes controlados solo con LG ThinQ no abren este puerto."
+      }
+    },
+    {
+      "key": "hosts",
+      "type": "string",
+      "default": "",
+      "required": false,
+      "label": {
+        "en": "IP addresses (optional)",
+        "fr": "Adresses IP (facultatif)",
+        "de": "IP-Adressen (optional)",
+        "es": "Direcciones IP (opcional)"
+      },
+      "placeholder": {
+        "en": "192.168.1.50",
+        "fr": "192.168.1.50",
+        "de": "192.168.1.50",
+        "es": "192.168.1.50"
+      },
+      "description": {
+        "en": "Only for soundbars the search does not find (another subnet, a network that blocks multicast). Separate them with commas. A fixed address (DHCP reservation in your router) is best.",
+        "fr": "Seulement pour les barres de son que la recherche ne trouve pas (autre sous-réseau, réseau qui bloque le multicast). Séparez-les par des virgules. Une adresse fixe (réservation DHCP dans votre box) est préférable.",
+        "de": "Nur für Soundbars, die die Suche nicht findet (anderes Subnetz, Netzwerk, das Multicast blockiert). Durch Kommas trennen. Eine feste Adresse (DHCP-Reservierung im Router) ist am besten.",
+        "es": "Solo para las barras de sonido que la búsqueda no encuentra (otra subred, una red que bloquea el multicast). Sepárelas con comas. Lo mejor es una dirección fija (reserva DHCP en su router)."
+      }
+    },
+    {
+      "key": "network_search",
+      "type": "boolean",
+      "default": true,
+      "required": false,
+      "label": {
+        "en": "Search the network",
+        "fr": "Rechercher sur le réseau",
+        "de": "Im Netzwerk suchen",
+        "es": "Buscar en la red"
+      },
+      "description": {
+        "en": "Gladys looks for the soundbars (mDNS, LG and Chromecast announcements) at each search of the Discover tab, and again when a soundbar stops answering (it may have a new address).",
+        "fr": "Gladys cherche les barres de son (mDNS, annonces LG et Chromecast) à chaque recherche de l’onglet Découverte, et quand une barre de son ne répond plus (elle a pu changer d’adresse).",
+        "de": "Gladys sucht die Soundbars (mDNS, LG- und Chromecast-Ankündigungen) bei jeder Suche im Tab Entdecken und erneut, wenn eine Soundbar nicht mehr antwortet (sie hat vielleicht eine neue Adresse).",
+        "es": "Gladys busca las barras de sonido (mDNS, anuncios de LG y Chromecast) en cada búsqueda de la pestaña Descubrir, y de nuevo cuando una barra de sonido deja de responder (puede tener una nueva dirección)."
+      }
+    },
+    {
+      "key": "quiet_start",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "label": {
+        "en": "Never wake the soundbar",
+        "fr": "Ne jamais réveiller la barre de son",
+        "de": "Soundbar nie aufwecken",
+        "es": "No despertar nunca la barra de sonido"
+      },
+      "description": {
+        "en": "A soundbar in standby switches on when it is asked something. By default the integration reads its state when it starts and after the soundbar was unreachable. Turn this on if your soundbar switches on when Gladys restarts: the state is then only learnt from its changes and your commands.",
+        "fr": "Une barre de son en veille s’allume quand on l’interroge. Par défaut, l’intégration lit son état au démarrage et après une coupure. Activez cette option si votre barre de son s’allume quand Gladys redémarre : l’état n’est alors connu que par ses changements et vos commandes.",
+        "de": "Eine Soundbar im Standby schaltet sich ein, wenn sie abgefragt wird. Standardmäßig liest die Integration ihren Zustand beim Start und nachdem die Soundbar nicht erreichbar war. Schalte dies ein, wenn sich deine Soundbar beim Neustart von Gladys einschaltet: Der Zustand ergibt sich dann nur aus ihren Änderungen und deinen Befehlen.",
+        "es": "Una barra de sonido en espera se enciende cuando se le pregunta algo. Por defecto, la integración lee su estado al arrancar y después de que la barra de sonido estuviera inaccesible. Active esta opción si su barra de sonido se enciende cuando Gladys se reinicia: el estado solo se conocerá por sus cambios y sus órdenes."
+      }
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "default": "en",
+      "required": false,
+      "label": {
+        "en": "Language of the names",
+        "fr": "Langue des noms",
+        "de": "Sprache der Namen",
+        "es": "Idioma de los nombres"
+      },
+      "description": {
+        "en": "Language of the feature names, of the inputs and sound modes, and of the texts of the scenes (Gladys does not tell the integration the language of the user).",
+        "fr": "Langue des noms de fonctionnalités, des sources et modes sonores, et des textes des scènes (Gladys ne transmet pas la langue de l’utilisateur à l’intégration).",
+        "de": "Sprache der Funktionsnamen, der Eingänge und Klangmodi sowie der Texte der Szenen (Gladys teilt der Integration die Sprache des Benutzers nicht mit).",
+        "es": "Idioma de los nombres de las funciones, de las entradas y modos de sonido, y de los textos de las escenas (Gladys no indica a la integración el idioma del usuario)."
+      },
+      "options": [
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "key": "search",
+      "timeout_seconds": 60,
+      "label": {
+        "en": "Search and test the soundbars",
+        "fr": "Rechercher et tester les barres de son",
+        "de": "Soundbars suchen und testen",
+        "es": "Buscar y probar las barras de sonido"
+      },
+      "description": {
+        "en": "Searches the local network and the typed addresses, then lists every soundbar found with its address, its model and whether it is connected.",
+        "fr": "Cherche sur le réseau local et aux adresses saisies, puis liste chaque barre de son trouvée avec son adresse, son modèle et si elle est connectée.",
+        "de": "Durchsucht das lokale Netzwerk und die eingegebenen Adressen und listet jede gefundene Soundbar mit Adresse, Modell und Verbindungsstatus auf.",
+        "es": "Busca en la red local y en las direcciones escritas, y lista cada barra de sonido encontrada con su dirección, su modelo y si está conectada."
+      }
+    }
+  ],
+  "widgets": [
+    {
+      "key": "soundbar",
+      "icon": "speaker",
+      "label": {
+        "en": "LG Soundbar",
+        "fr": "Barre de son LG",
+        "de": "LG-Soundbar",
+        "es": "Barra de sonido LG"
+      },
+      "description": {
+        "en": "What the soundbar plays, its input and sound mode, and a small remote.",
+        "fr": "Ce que joue la barre de son, sa source et son mode sonore, et une petite télécommande.",
+        "de": "Was die Soundbar spielt, Eingang und Klangmodus, und eine kleine Fernbedienung.",
+        "es": "Lo que reproduce la barra de sonido, su entrada y modo de sonido, y un pequeño mando."
+      },
+      "settings": [
+        {
+          "key": "soundbar",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Soundbar",
+            "fr": "Barre de son",
+            "de": "Soundbar",
+            "es": "Barra de sonido"
+          },
+          "description": {
+            "en": "An LG Soundbar device. Leave empty for the first soundbar.",
+            "fr": "Un appareil LG Soundbar. Laissez vide pour la première barre de son.",
+            "de": "Ein LG-Soundbar-Gerät. Leer lassen für die erste Soundbar.",
+            "es": "Un dispositivo LG Soundbar. Déjelo vacío para la primera barra de sonido."
+          }
+        }
+      ],
+      "action_timeout_seconds": 20
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "source_changed",
+      "label": {
+        "en": "LG Soundbar: input changed",
+        "fr": "Barre de son LG : source changée",
+        "de": "LG-Soundbar: Eingang geändert",
+        "es": "Barra de sonido LG: entrada cambiada"
+      },
+      "description": {
+        "en": "The input changes on the soundbar itself: remote, TV (HDMI CEC), LG app, a phone that connects in Bluetooth. Not when Gladys changes it.",
+        "fr": "La source change sur la barre de son elle-même : télécommande, TV (HDMI CEC), appli LG, un téléphone qui se connecte en Bluetooth. Pas quand Gladys la change.",
+        "de": "Der Eingang ändert sich an der Soundbar selbst: Fernbedienung, Fernseher (HDMI CEC), LG-App, ein Handy, das sich per Bluetooth verbindet. Nicht, wenn Gladys ihn ändert.",
+        "es": "La entrada cambia en la propia barra de sonido: mando, TV (HDMI CEC), app de LG, un teléfono que se conecta por Bluetooth. No cuando Gladys la cambia."
+      },
+      "fields": [
+        {
+          "key": "soundbar",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Soundbar",
+            "fr": "Barre de son",
+            "de": "Soundbar",
+            "es": "Barra de sonido"
+          },
+          "description": {
+            "en": "An LG Soundbar device. Leave empty for any soundbar.",
+            "fr": "Un appareil LG Soundbar. Laissez vide pour n’importe quelle barre de son.",
+            "de": "Ein LG-Soundbar-Gerät. Leer lassen für jede Soundbar.",
+            "es": "Un dispositivo LG Soundbar. Déjelo vacío para cualquier barra de sonido."
+          }
+        },
+        {
+          "key": "source",
+          "type": "multi_select",
+          "required": false,
+          "label": {
+            "en": "New input",
+            "fr": "Nouvelle source",
+            "de": "Neuer Eingang",
+            "es": "Nueva entrada"
+          },
+          "description": {
+            "en": "Leave empty for any input.",
+            "fr": "Laissez vide pour n’importe quelle source.",
+            "de": "Leer lassen für jeden Eingang.",
+            "es": "Déjelo vacío para cualquier entrada."
+          },
+          "options": [
+            {
+              "value": "func-0",
+              "label": {
+                "en": "Wi-Fi",
+                "fr": "Wi-Fi",
+                "de": "Wi-Fi",
+                "es": "Wi-Fi"
+              }
+            },
+            {
+              "value": "func-1",
+              "label": {
+                "en": "Bluetooth",
+                "fr": "Bluetooth",
+                "de": "Bluetooth",
+                "es": "Bluetooth"
+              }
+            },
+            {
+              "value": "func-2",
+              "label": {
+                "en": "Portable",
+                "fr": "Portable",
+                "de": "Portable",
+                "es": "Portable"
+              }
+            },
+            {
+              "value": "func-3",
+              "label": {
+                "en": "Aux",
+                "fr": "Entrée auxiliaire",
+                "de": "AUX-Eingang",
+                "es": "Entrada auxiliar"
+              }
+            },
+            {
+              "value": "func-4",
+              "label": {
+                "en": "Optical",
+                "fr": "Optique",
+                "de": "Optisch",
+                "es": "Óptica"
+              }
+            },
+            {
+              "value": "func-5",
+              "label": {
+                "en": "CP",
+                "fr": "CP",
+                "de": "CP",
+                "es": "CP"
+              }
+            },
+            {
+              "value": "func-6",
+              "label": {
+                "en": "HDMI",
+                "fr": "HDMI",
+                "de": "HDMI",
+                "es": "HDMI"
+              }
+            },
+            {
+              "value": "func-7",
+              "label": {
+                "en": "ARC",
+                "fr": "ARC",
+                "de": "ARC",
+                "es": "ARC"
+              }
+            },
+            {
+              "value": "func-8",
+              "label": {
+                "en": "Spotify",
+                "fr": "Spotify",
+                "de": "Spotify",
+                "es": "Spotify"
+              }
+            },
+            {
+              "value": "func-9",
+              "label": {
+                "en": "Optical 2",
+                "fr": "Optique 2",
+                "de": "Optisch 2",
+                "es": "Óptica 2"
+              }
+            },
+            {
+              "value": "func-10",
+              "label": {
+                "en": "HDMI 2",
+                "fr": "HDMI 2",
+                "de": "HDMI 2",
+                "es": "HDMI 2"
+              }
+            },
+            {
+              "value": "func-11",
+              "label": {
+                "en": "HDMI 3",
+                "fr": "HDMI 3",
+                "de": "HDMI 3",
+                "es": "HDMI 3"
+              }
+            },
+            {
+              "value": "func-12",
+              "label": {
+                "en": "LG TV",
+                "fr": "TV LG",
+                "de": "LG TV",
+                "es": "TV LG"
+              }
+            },
+            {
+              "value": "func-13",
+              "label": {
+                "en": "Mic",
+                "fr": "Micro",
+                "de": "Mikrofon",
+                "es": "Micrófono"
+              }
+            },
+            {
+              "value": "func-14",
+              "label": {
+                "en": "Chromecast",
+                "fr": "Chromecast",
+                "de": "Chromecast",
+                "es": "Chromecast"
+              }
+            },
+            {
+              "value": "func-15",
+              "label": {
+                "en": "Optical / HDMI ARC",
+                "fr": "Optique / HDMI ARC",
+                "de": "Optisch / HDMI ARC",
+                "es": "Óptica / HDMI ARC"
+              }
+            },
+            {
+              "value": "func-16",
+              "label": {
+                "en": "LG Optical",
+                "fr": "Optique LG",
+                "de": "LG Optisch",
+                "es": "Óptica LG"
+              }
+            },
+            {
+              "value": "func-17",
+              "label": {
+                "en": "FM",
+                "fr": "FM",
+                "de": "FM",
+                "es": "FM"
+              }
+            },
+            {
+              "value": "func-18",
+              "label": {
+                "en": "USB",
+                "fr": "USB",
+                "de": "USB",
+                "es": "USB"
+              }
+            },
+            {
+              "value": "func-19",
+              "label": {
+                "en": "USB 2",
+                "fr": "USB 2",
+                "de": "USB 2",
+                "es": "USB 2"
+              }
+            },
+            {
+              "value": "func-20",
+              "label": {
+                "en": "E-ARC",
+                "fr": "E-ARC",
+                "de": "E-ARC",
+                "es": "E-ARC"
+              }
+            },
+            {
+              "value": "func-21",
+              "label": {
+                "en": "WOWCAST",
+                "fr": "WOWCAST",
+                "de": "WOWCAST",
+                "es": "WOWCAST"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "soundbar",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "label": {
+            "en": "Input (value)",
+            "fr": "Source (valeur)",
+            "de": "Eingang (Wert)",
+            "es": "Entrada (valor)"
+          }
+        },
+        {
+          "key": "source_name",
+          "type": "string",
+          "label": {
+            "en": "Input",
+            "fr": "Source",
+            "de": "Eingang",
+            "es": "Entrada"
+          }
+        },
+        {
+          "key": "previous_source_name",
+          "type": "string",
+          "label": {
+            "en": "Previous input",
+            "fr": "Source précédente",
+            "de": "Vorheriger Eingang",
+            "es": "Entrada anterior"
+          }
+        }
+      ]
+    },
+    {
+      "key": "sound_mode_changed",
+      "label": {
+        "en": "LG Soundbar: sound mode changed",
+        "fr": "Barre de son LG : mode sonore changé",
+        "de": "LG-Soundbar: Klangmodus geändert",
+        "es": "Barra de sonido LG: modo de sonido cambiado"
+      },
+      "description": {
+        "en": "The sound mode changes on the soundbar itself (remote, LG app, AI Sound Pro of the TV). Not when Gladys changes it.",
+        "fr": "Le mode sonore change sur la barre de son elle-même (télécommande, appli LG, AI Sound Pro de la TV). Pas quand Gladys le change.",
+        "de": "Der Klangmodus ändert sich an der Soundbar selbst (Fernbedienung, LG-App, AI Sound Pro des Fernsehers). Nicht, wenn Gladys ihn ändert.",
+        "es": "El modo de sonido cambia en la propia barra de sonido (mando, app de LG, AI Sound Pro de la TV). No cuando Gladys lo cambia."
+      },
+      "fields": [
+        {
+          "key": "soundbar",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Soundbar",
+            "fr": "Barre de son",
+            "de": "Soundbar",
+            "es": "Barra de sonido"
+          },
+          "description": {
+            "en": "An LG Soundbar device. Leave empty for any soundbar.",
+            "fr": "Un appareil LG Soundbar. Laissez vide pour n’importe quelle barre de son.",
+            "de": "Ein LG-Soundbar-Gerät. Leer lassen für jede Soundbar.",
+            "es": "Un dispositivo LG Soundbar. Déjelo vacío para cualquier barra de sonido."
+          }
+        },
+        {
+          "key": "sound_mode",
+          "type": "multi_select",
+          "required": false,
+          "label": {
+            "en": "New sound mode",
+            "fr": "Nouveau mode sonore",
+            "de": "Neuer Klangmodus",
+            "es": "Nuevo modo de sonido"
+          },
+          "description": {
+            "en": "Leave empty for any sound mode.",
+            "fr": "Laissez vide pour n’importe quel mode sonore.",
+            "de": "Leer lassen für jeden Klangmodus.",
+            "es": "Déjelo vacío para cualquier modo de sonido."
+          },
+          "options": [
+            {
+              "value": "eq-0",
+              "label": {
+                "en": "Standard",
+                "fr": "Standard",
+                "de": "Standard",
+                "es": "Estándar"
+              }
+            },
+            {
+              "value": "eq-1",
+              "label": {
+                "en": "Bass",
+                "fr": "Graves",
+                "de": "Bass",
+                "es": "Graves"
+              }
+            },
+            {
+              "value": "eq-2",
+              "label": {
+                "en": "Flat",
+                "fr": "Plat",
+                "de": "Linear",
+                "es": "Plano"
+              }
+            },
+            {
+              "value": "eq-3",
+              "label": {
+                "en": "Boost",
+                "fr": "Boost",
+                "de": "Boost",
+                "es": "Realce"
+              }
+            },
+            {
+              "value": "eq-4",
+              "label": {
+                "en": "Treble and Bass",
+                "fr": "Aigus et graves",
+                "de": "Höhen und Bass",
+                "es": "Agudos y graves"
+              }
+            },
+            {
+              "value": "eq-5",
+              "label": {
+                "en": "User EQ",
+                "fr": "Égaliseur perso",
+                "de": "Benutzer-EQ",
+                "es": "Ecualizador propio"
+              }
+            },
+            {
+              "value": "eq-6",
+              "label": {
+                "en": "Music",
+                "fr": "Musique",
+                "de": "Musik",
+                "es": "Música"
+              }
+            },
+            {
+              "value": "eq-7",
+              "label": {
+                "en": "Cinema",
+                "fr": "Cinéma",
+                "de": "Kino",
+                "es": "Cine"
+              }
+            },
+            {
+              "value": "eq-8",
+              "label": {
+                "en": "Night",
+                "fr": "Nuit",
+                "de": "Nacht",
+                "es": "Noche"
+              }
+            },
+            {
+              "value": "eq-9",
+              "label": {
+                "en": "News",
+                "fr": "Actualités",
+                "de": "Nachrichten",
+                "es": "Noticias"
+              }
+            },
+            {
+              "value": "eq-10",
+              "label": {
+                "en": "Voice",
+                "fr": "Voix",
+                "de": "Sprache",
+                "es": "Voz"
+              }
+            },
+            {
+              "value": "eq-11",
+              "label": {
+                "en": "IA Sound",
+                "fr": "IA Sound",
+                "de": "IA Sound",
+                "es": "IA Sound"
+              }
+            },
+            {
+              "value": "eq-12",
+              "label": {
+                "en": "Adaptive Sound Control",
+                "fr": "Contrôle adaptatif du son",
+                "de": "Adaptive Klangsteuerung",
+                "es": "Control adaptativo del sonido"
+              }
+            },
+            {
+              "value": "eq-13",
+              "label": {
+                "en": "Movie",
+                "fr": "Film",
+                "de": "Film",
+                "es": "Película"
+              }
+            },
+            {
+              "value": "eq-14",
+              "label": {
+                "en": "Bass Blast",
+                "fr": "Bass Blast",
+                "de": "Bass Blast",
+                "es": "Bass Blast"
+              }
+            },
+            {
+              "value": "eq-15",
+              "label": {
+                "en": "Dolby Atmos",
+                "fr": "Dolby Atmos",
+                "de": "Dolby Atmos",
+                "es": "Dolby Atmos"
+              }
+            },
+            {
+              "value": "eq-16",
+              "label": {
+                "en": "DTS Virtual:X",
+                "fr": "DTS Virtual:X",
+                "de": "DTS Virtual:X",
+                "es": "DTS Virtual:X"
+              }
+            },
+            {
+              "value": "eq-17",
+              "label": {
+                "en": "Bass Boost Plus",
+                "fr": "Bass Boost Plus",
+                "de": "Bass Boost Plus",
+                "es": "Bass Boost Plus"
+              }
+            },
+            {
+              "value": "eq-18",
+              "label": {
+                "en": "DTS:X",
+                "fr": "DTS:X",
+                "de": "DTS:X",
+                "es": "DTS:X"
+              }
+            },
+            {
+              "value": "eq-19",
+              "label": {
+                "en": "AI Sound Pro",
+                "fr": "AI Sound Pro",
+                "de": "AI Sound Pro",
+                "es": "AI Sound Pro"
+              }
+            },
+            {
+              "value": "eq-20",
+              "label": {
+                "en": "Clear Voice",
+                "fr": "Voix claire",
+                "de": "Klare Stimme",
+                "es": "Voz clara"
+              }
+            },
+            {
+              "value": "eq-21",
+              "label": {
+                "en": "Sports",
+                "fr": "Sport",
+                "de": "Sport",
+                "es": "Deportes"
+              }
+            },
+            {
+              "value": "eq-22",
+              "label": {
+                "en": "Game",
+                "fr": "Jeu",
+                "de": "Spiel",
+                "es": "Juego"
+              }
+            },
+            {
+              "value": "eq-23",
+              "label": {
+                "en": "Sync with TV",
+                "fr": "Synchro avec la TV",
+                "de": "Mit TV synchronisieren",
+                "es": "Sincronizar con la TV"
+              }
+            },
+            {
+              "value": "eq-24",
+              "label": {
+                "en": "AI Sound Pro (24)",
+                "fr": "AI Sound Pro (24)",
+                "de": "AI Sound Pro (24)",
+                "es": "AI Sound Pro (24)"
+              }
+            },
+            {
+              "value": "eq-25",
+              "label": {
+                "en": "AI Sound Pro (25)",
+                "fr": "AI Sound Pro (25)",
+                "de": "AI Sound Pro (25)",
+                "es": "AI Sound Pro (25)"
+              }
+            },
+            {
+              "value": "eq-26",
+              "label": {
+                "en": "Clear Voice Pro",
+                "fr": "Voix claire Pro",
+                "de": "Klare Stimme Pro",
+                "es": "Voz clara Pro"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "soundbar",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        },
+        {
+          "key": "sound_mode",
+          "type": "string",
+          "label": {
+            "en": "Sound mode (value)",
+            "fr": "Mode sonore (valeur)",
+            "de": "Klangmodus (Wert)",
+            "es": "Modo de sonido (valor)"
+          }
+        },
+        {
+          "key": "sound_mode_name",
+          "type": "string",
+          "label": {
+            "en": "Sound mode",
+            "fr": "Mode sonore",
+            "de": "Klangmodus",
+            "es": "Modo de sonido"
+          }
+        },
+        {
+          "key": "previous_sound_mode_name",
+          "type": "string",
+          "label": {
+            "en": "Previous sound mode",
+            "fr": "Mode sonore précédent",
+            "de": "Vorheriger Klangmodus",
+            "es": "Modo de sonido anterior"
+          }
+        }
+      ]
+    },
+    {
+      "key": "track_changed",
+      "label": {
+        "en": "LG Soundbar: new track",
+        "fr": "Barre de son LG : nouveau morceau",
+        "de": "LG-Soundbar: neuer Titel",
+        "es": "Barra de sonido LG: nueva canción"
+      },
+      "description": {
+        "en": "A new track starts on music streamed to the soundbar (Chromecast, AirPlay, Spotify Connect…), when the soundbar tells its title.",
+        "fr": "Un nouveau morceau commence sur la musique diffusée vers la barre de son (Chromecast, AirPlay, Spotify Connect…), quand elle en donne le titre.",
+        "de": "Ein neuer Titel beginnt bei Musik, die an die Soundbar gestreamt wird (Chromecast, AirPlay, Spotify Connect…), wenn sie den Titel meldet.",
+        "es": "Empieza una nueva canción en la música transmitida a la barra de sonido (Chromecast, AirPlay, Spotify Connect…), cuando esta indica el título."
+      },
+      "fields": [
+        {
+          "key": "soundbar",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Soundbar",
+            "fr": "Barre de son",
+            "de": "Soundbar",
+            "es": "Barra de sonido"
+          },
+          "description": {
+            "en": "An LG Soundbar device. Leave empty for any soundbar.",
+            "fr": "Un appareil LG Soundbar. Laissez vide pour n’importe quelle barre de son.",
+            "de": "Ein LG-Soundbar-Gerät. Leer lassen für jede Soundbar.",
+            "es": "Un dispositivo LG Soundbar. Déjelo vacío para cualquier barra de sonido."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "soundbar",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        },
+        {
+          "key": "title",
+          "type": "string",
+          "label": {
+            "en": "Title",
+            "fr": "Titre",
+            "de": "Titel",
+            "es": "Título"
+          }
+        },
+        {
+          "key": "artist",
+          "type": "string",
+          "label": {
+            "en": "Artist",
+            "fr": "Artiste",
+            "de": "Interpret",
+            "es": "Artista"
+          }
+        },
+        {
+          "key": "stream",
+          "type": "string",
+          "label": {
+            "en": "Streamed by",
+            "fr": "Diffusé par",
+            "de": "Gestreamt über",
+            "es": "Transmitido por"
+          }
+        }
+      ]
+    },
+    {
+      "key": "soundbar_offline",
+      "label": {
+        "en": "LG Soundbar: unreachable",
+        "fr": "Barre de son LG : injoignable",
+        "de": "LG-Soundbar: nicht erreichbar",
+        "es": "Barra de sonido LG: inaccesible"
+      },
+      "description": {
+        "en": "The soundbar no longer accepts a connection for 2 minutes: unplugged, power cut, network down or a new address.",
+        "fr": "La barre de son n’accepte plus de connexion depuis 2 minutes : débranchée, coupure de courant, réseau en panne ou nouvelle adresse.",
+        "de": "Die Soundbar nimmt seit 2 Minuten keine Verbindung mehr an: ausgesteckt, Stromausfall, Netzwerk gestört oder neue Adresse.",
+        "es": "La barra de sonido no acepta conexiones desde hace 2 minutos: desenchufada, corte de luz, red caída o nueva dirección."
+      },
+      "fields": [
+        {
+          "key": "soundbar",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Soundbar",
+            "fr": "Barre de son",
+            "de": "Soundbar",
+            "es": "Barra de sonido"
+          },
+          "description": {
+            "en": "An LG Soundbar device. Leave empty for any soundbar.",
+            "fr": "Un appareil LG Soundbar. Laissez vide pour n’importe quelle barre de son.",
+            "de": "Ein LG-Soundbar-Gerät. Leer lassen für jede Soundbar.",
+            "es": "Un dispositivo LG Soundbar. Déjelo vacío para cualquier barra de sonido."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "soundbar",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        }
+      ]
+    },
+    {
+      "key": "soundbar_online",
+      "label": {
+        "en": "LG Soundbar: reachable again",
+        "fr": "Barre de son LG : de nouveau joignable",
+        "de": "LG-Soundbar: wieder erreichbar",
+        "es": "Barra de sonido LG: de nuevo accesible"
+      },
+      "description": {
+        "en": "The soundbar accepts a connection again after being unreachable.",
+        "fr": "La barre de son accepte de nouveau une connexion après avoir été injoignable.",
+        "de": "Die Soundbar nimmt wieder eine Verbindung an, nachdem sie nicht erreichbar war.",
+        "es": "La barra de sonido vuelve a aceptar una conexión tras estar inaccesible."
+      },
+      "fields": [
+        {
+          "key": "soundbar",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Soundbar",
+            "fr": "Barre de son",
+            "de": "Soundbar",
+            "es": "Barra de sonido"
+          },
+          "description": {
+            "en": "An LG Soundbar device. Leave empty for any soundbar.",
+            "fr": "Un appareil LG Soundbar. Laissez vide pour n’importe quelle barre de son.",
+            "de": "Ein LG-Soundbar-Gerät. Leer lassen für jede Soundbar.",
+            "es": "Un dispositivo LG Soundbar. Déjelo vacío para cualquier barra de sonido."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "soundbar",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "apply_sound_preset",
+      "timeout_seconds": 30,
+      "label": {
+        "en": "LG Soundbar: apply a sound preset",
+        "fr": "Barre de son LG : appliquer un préréglage son",
+        "de": "LG-Soundbar: Klangvoreinstellung anwenden",
+        "es": "Barra de sonido LG: aplicar un ajuste de sonido"
+      },
+      "description": {
+        "en": "Sets the input, the sound mode, the night mode and the volume in one go (input first, volume last). Empty fields stay as they are. Wakes the soundbar up.",
+        "fr": "Règle d’un coup la source, le mode sonore, le mode nuit et le volume (la source d’abord, le volume en dernier). Les champs vides restent inchangés. Réveille la barre de son.",
+        "de": "Stellt Eingang, Klangmodus, Nachtmodus und Lautstärke auf einmal ein (zuerst der Eingang, zuletzt die Lautstärke). Leere Felder bleiben unverändert. Weckt die Soundbar auf.",
+        "es": "Ajusta de una vez la entrada, el modo de sonido, el modo noche y el volumen (primero la entrada, el volumen al final). Los campos vacíos no cambian. Despierta la barra de sonido."
+      },
+      "fields": [
+        {
+          "key": "soundbar",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Soundbar",
+            "fr": "Barre de son",
+            "de": "Soundbar",
+            "es": "Barra de sonido"
+          },
+          "description": {
+            "en": "An LG Soundbar device. Leave empty for the first soundbar.",
+            "fr": "Un appareil LG Soundbar. Laissez vide pour la première barre de son.",
+            "de": "Ein LG-Soundbar-Gerät. Leer lassen für die erste Soundbar.",
+            "es": "Un dispositivo LG Soundbar. Déjelo vacío para la primera barra de sonido."
+          }
+        },
+        {
+          "key": "source",
+          "type": "select",
+          "required": false,
+          "label": {
+            "en": "Input",
+            "fr": "Source",
+            "de": "Eingang",
+            "es": "Entrada"
+          },
+          "description": {
+            "en": "Empty: unchanged. Must be an input of this soundbar.",
+            "fr": "Vide : inchangée. Doit être une source de cette barre de son.",
+            "de": "Leer: unverändert. Muss ein Eingang dieser Soundbar sein.",
+            "es": "Vacío: sin cambios. Debe ser una entrada de esta barra de sonido."
+          },
+          "options": [
+            {
+              "value": "func-0",
+              "label": {
+                "en": "Wi-Fi",
+                "fr": "Wi-Fi",
+                "de": "Wi-Fi",
+                "es": "Wi-Fi"
+              }
+            },
+            {
+              "value": "func-1",
+              "label": {
+                "en": "Bluetooth",
+                "fr": "Bluetooth",
+                "de": "Bluetooth",
+                "es": "Bluetooth"
+              }
+            },
+            {
+              "value": "func-2",
+              "label": {
+                "en": "Portable",
+                "fr": "Portable",
+                "de": "Portable",
+                "es": "Portable"
+              }
+            },
+            {
+              "value": "func-3",
+              "label": {
+                "en": "Aux",
+                "fr": "Entrée auxiliaire",
+                "de": "AUX-Eingang",
+                "es": "Entrada auxiliar"
+              }
+            },
+            {
+              "value": "func-4",
+              "label": {
+                "en": "Optical",
+                "fr": "Optique",
+                "de": "Optisch",
+                "es": "Óptica"
+              }
+            },
+            {
+              "value": "func-5",
+              "label": {
+                "en": "CP",
+                "fr": "CP",
+                "de": "CP",
+                "es": "CP"
+              }
+            },
+            {
+              "value": "func-6",
+              "label": {
+                "en": "HDMI",
+                "fr": "HDMI",
+                "de": "HDMI",
+                "es": "HDMI"
+              }
+            },
+            {
+              "value": "func-7",
+              "label": {
+                "en": "ARC",
+                "fr": "ARC",
+                "de": "ARC",
+                "es": "ARC"
+              }
+            },
+            {
+              "value": "func-8",
+              "label": {
+                "en": "Spotify",
+                "fr": "Spotify",
+                "de": "Spotify",
+                "es": "Spotify"
+              }
+            },
+            {
+              "value": "func-9",
+              "label": {
+                "en": "Optical 2",
+                "fr": "Optique 2",
+                "de": "Optisch 2",
+                "es": "Óptica 2"
+              }
+            },
+            {
+              "value": "func-10",
+              "label": {
+                "en": "HDMI 2",
+                "fr": "HDMI 2",
+                "de": "HDMI 2",
+                "es": "HDMI 2"
+              }
+            },
+            {
+              "value": "func-11",
+              "label": {
+                "en": "HDMI 3",
+                "fr": "HDMI 3",
+                "de": "HDMI 3",
+                "es": "HDMI 3"
+              }
+            },
+            {
+              "value": "func-12",
+              "label": {
+                "en": "LG TV",
+                "fr": "TV LG",
+                "de": "LG TV",
+                "es": "TV LG"
+              }
+            },
+            {
+              "value": "func-13",
+              "label": {
+                "en": "Mic",
+                "fr": "Micro",
+                "de": "Mikrofon",
+                "es": "Micrófono"
+              }
+            },
+            {
+              "value": "func-14",
+              "label": {
+                "en": "Chromecast",
+                "fr": "Chromecast",
+                "de": "Chromecast",
+                "es": "Chromecast"
+              }
+            },
+            {
+              "value": "func-15",
+              "label": {
+                "en": "Optical / HDMI ARC",
+                "fr": "Optique / HDMI ARC",
+                "de": "Optisch / HDMI ARC",
+                "es": "Óptica / HDMI ARC"
+              }
+            },
+            {
+              "value": "func-16",
+              "label": {
+                "en": "LG Optical",
+                "fr": "Optique LG",
+                "de": "LG Optisch",
+                "es": "Óptica LG"
+              }
+            },
+            {
+              "value": "func-17",
+              "label": {
+                "en": "FM",
+                "fr": "FM",
+                "de": "FM",
+                "es": "FM"
+              }
+            },
+            {
+              "value": "func-18",
+              "label": {
+                "en": "USB",
+                "fr": "USB",
+                "de": "USB",
+                "es": "USB"
+              }
+            },
+            {
+              "value": "func-19",
+              "label": {
+                "en": "USB 2",
+                "fr": "USB 2",
+                "de": "USB 2",
+                "es": "USB 2"
+              }
+            },
+            {
+              "value": "func-20",
+              "label": {
+                "en": "E-ARC",
+                "fr": "E-ARC",
+                "de": "E-ARC",
+                "es": "E-ARC"
+              }
+            },
+            {
+              "value": "func-21",
+              "label": {
+                "en": "WOWCAST",
+                "fr": "WOWCAST",
+                "de": "WOWCAST",
+                "es": "WOWCAST"
+              }
+            }
+          ]
+        },
+        {
+          "key": "sound_mode",
+          "type": "select",
+          "required": false,
+          "label": {
+            "en": "Sound mode",
+            "fr": "Mode sonore",
+            "de": "Klangmodus",
+            "es": "Modo de sonido"
+          },
+          "description": {
+            "en": "Empty: unchanged. Must be a sound mode of this soundbar.",
+            "fr": "Vide : inchangé. Doit être un mode sonore de cette barre de son.",
+            "de": "Leer: unverändert. Muss ein Klangmodus dieser Soundbar sein.",
+            "es": "Vacío: sin cambios. Debe ser un modo de sonido de esta barra de sonido."
+          },
+          "options": [
+            {
+              "value": "eq-0",
+              "label": {
+                "en": "Standard",
+                "fr": "Standard",
+                "de": "Standard",
+                "es": "Estándar"
+              }
+            },
+            {
+              "value": "eq-1",
+              "label": {
+                "en": "Bass",
+                "fr": "Graves",
+                "de": "Bass",
+                "es": "Graves"
+              }
+            },
+            {
+              "value": "eq-2",
+              "label": {
+                "en": "Flat",
+                "fr": "Plat",
+                "de": "Linear",
+                "es": "Plano"
+              }
+            },
+            {
+              "value": "eq-3",
+              "label": {
+                "en": "Boost",
+                "fr": "Boost",
+                "de": "Boost",
+                "es": "Realce"
+              }
+            },
+            {
+              "value": "eq-4",
+              "label": {
+                "en": "Treble and Bass",
+                "fr": "Aigus et graves",
+                "de": "Höhen und Bass",
+                "es": "Agudos y graves"
+              }
+            },
+            {
+              "value": "eq-5",
+              "label": {
+                "en": "User EQ",
+                "fr": "Égaliseur perso",
+                "de": "Benutzer-EQ",
+                "es": "Ecualizador propio"
+              }
+            },
+            {
+              "value": "eq-6",
+              "label": {
+                "en": "Music",
+                "fr": "Musique",
+                "de": "Musik",
+                "es": "Música"
+              }
+            },
+            {
+              "value": "eq-7",
+              "label": {
+                "en": "Cinema",
+                "fr": "Cinéma",
+                "de": "Kino",
+                "es": "Cine"
+              }
+            },
+            {
+              "value": "eq-8",
+              "label": {
+                "en": "Night",
+                "fr": "Nuit",
+                "de": "Nacht",
+                "es": "Noche"
+              }
+            },
+            {
+              "value": "eq-9",
+              "label": {
+                "en": "News",
+                "fr": "Actualités",
+                "de": "Nachrichten",
+                "es": "Noticias"
+              }
+            },
+            {
+              "value": "eq-10",
+              "label": {
+                "en": "Voice",
+                "fr": "Voix",
+                "de": "Sprache",
+                "es": "Voz"
+              }
+            },
+            {
+              "value": "eq-11",
+              "label": {
+                "en": "IA Sound",
+                "fr": "IA Sound",
+                "de": "IA Sound",
+                "es": "IA Sound"
+              }
+            },
+            {
+              "value": "eq-12",
+              "label": {
+                "en": "Adaptive Sound Control",
+                "fr": "Contrôle adaptatif du son",
+                "de": "Adaptive Klangsteuerung",
+                "es": "Control adaptativo del sonido"
+              }
+            },
+            {
+              "value": "eq-13",
+              "label": {
+                "en": "Movie",
+                "fr": "Film",
+                "de": "Film",
+                "es": "Película"
+              }
+            },
+            {
+              "value": "eq-14",
+              "label": {
+                "en": "Bass Blast",
+                "fr": "Bass Blast",
+                "de": "Bass Blast",
+                "es": "Bass Blast"
+              }
+            },
+            {
+              "value": "eq-15",
+              "label": {
+                "en": "Dolby Atmos",
+                "fr": "Dolby Atmos",
+                "de": "Dolby Atmos",
+                "es": "Dolby Atmos"
+              }
+            },
+            {
+              "value": "eq-16",
+              "label": {
+                "en": "DTS Virtual:X",
+                "fr": "DTS Virtual:X",
+                "de": "DTS Virtual:X",
+                "es": "DTS Virtual:X"
+              }
+            },
+            {
+              "value": "eq-17",
+              "label": {
+                "en": "Bass Boost Plus",
+                "fr": "Bass Boost Plus",
+                "de": "Bass Boost Plus",
+                "es": "Bass Boost Plus"
+              }
+            },
+            {
+              "value": "eq-18",
+              "label": {
+                "en": "DTS:X",
+                "fr": "DTS:X",
+                "de": "DTS:X",
+                "es": "DTS:X"
+              }
+            },
+            {
+              "value": "eq-19",
+              "label": {
+                "en": "AI Sound Pro",
+                "fr": "AI Sound Pro",
+                "de": "AI Sound Pro",
+                "es": "AI Sound Pro"
+              }
+            },
+            {
+              "value": "eq-20",
+              "label": {
+                "en": "Clear Voice",
+                "fr": "Voix claire",
+                "de": "Klare Stimme",
+                "es": "Voz clara"
+              }
+            },
+            {
+              "value": "eq-21",
+              "label": {
+                "en": "Sports",
+                "fr": "Sport",
+                "de": "Sport",
+                "es": "Deportes"
+              }
+            },
+            {
+              "value": "eq-22",
+              "label": {
+                "en": "Game",
+                "fr": "Jeu",
+                "de": "Spiel",
+                "es": "Juego"
+              }
+            },
+            {
+              "value": "eq-23",
+              "label": {
+                "en": "Sync with TV",
+                "fr": "Synchro avec la TV",
+                "de": "Mit TV synchronisieren",
+                "es": "Sincronizar con la TV"
+              }
+            },
+            {
+              "value": "eq-24",
+              "label": {
+                "en": "AI Sound Pro (24)",
+                "fr": "AI Sound Pro (24)",
+                "de": "AI Sound Pro (24)",
+                "es": "AI Sound Pro (24)"
+              }
+            },
+            {
+              "value": "eq-25",
+              "label": {
+                "en": "AI Sound Pro (25)",
+                "fr": "AI Sound Pro (25)",
+                "de": "AI Sound Pro (25)",
+                "es": "AI Sound Pro (25)"
+              }
+            },
+            {
+              "value": "eq-26",
+              "label": {
+                "en": "Clear Voice Pro",
+                "fr": "Voix claire Pro",
+                "de": "Klare Stimme Pro",
+                "es": "Voz clara Pro"
+              }
+            }
+          ]
+        },
+        {
+          "key": "night_mode",
+          "type": "select",
+          "required": false,
+          "default": "unchanged",
+          "label": {
+            "en": "Night mode",
+            "fr": "Mode nuit",
+            "de": "Nachtmodus",
+            "es": "Modo noche"
+          },
+          "options": [
+            {
+              "value": "unchanged",
+              "label": {
+                "en": "Unchanged",
+                "fr": "Inchangé",
+                "de": "Unverändert",
+                "es": "Sin cambios"
+              }
+            },
+            {
+              "value": "on",
+              "label": {
+                "en": "On",
+                "fr": "Activé",
+                "de": "An",
+                "es": "Activado"
+              }
+            },
+            {
+              "value": "off",
+              "label": {
+                "en": "Off",
+                "fr": "Désactivé",
+                "de": "Aus",
+                "es": "Desactivado"
+              }
+            }
+          ]
+        },
+        {
+          "key": "volume",
+          "type": "number",
+          "required": false,
+          "min": 0,
+          "max": 100,
+          "label": {
+            "en": "Volume",
+            "fr": "Volume",
+            "de": "Lautstärke",
+            "es": "Volumen"
+          },
+          "description": {
+            "en": "Empty: unchanged. Kept within the range of the soundbar (0 to 40 on many models).",
+            "fr": "Vide : inchangé. Borné à la plage de la barre de son (0 à 40 sur beaucoup de modèles).",
+            "de": "Leer: unverändert. Bleibt im Bereich der Soundbar (0 bis 40 bei vielen Modellen).",
+            "es": "Vacío: sin cambios. Se limita al rango de la barra de sonido (0 a 40 en muchos modelos)."
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "volume",
+          "type": "number",
+          "label": {
+            "en": "Volume",
+            "fr": "Volume",
+            "de": "Lautstärke",
+            "es": "Volumen"
+          }
+        },
+        {
+          "key": "source_name",
+          "type": "string",
+          "label": {
+            "en": "Input",
+            "fr": "Source",
+            "de": "Eingang",
+            "es": "Entrada"
+          }
+        },
+        {
+          "key": "sound_mode_name",
+          "type": "string",
+          "label": {
+            "en": "Sound mode",
+            "fr": "Mode sonore",
+            "de": "Klangmodus",
+            "es": "Modo de sonido"
+          }
+        }
+      ]
+    },
+    {
+      "key": "change_volume",
+      "timeout_seconds": 20,
+      "label": {
+        "en": "LG Soundbar: change the volume",
+        "fr": "Barre de son LG : changer le volume",
+        "de": "LG-Soundbar: Lautstärke ändern",
+        "es": "Barra de sonido LG: cambiar el volumen"
+      },
+      "description": {
+        "en": "Raises or lowers the volume by a number of steps from where it is (for example −5 when the phone rings). Kept within the range of the soundbar.",
+        "fr": "Monte ou baisse le volume d’un nombre de crans à partir de sa valeur actuelle (par exemple −5 quand le téléphone sonne). Borné à la plage de la barre de son.",
+        "de": "Erhöht oder senkt die Lautstärke um eine Anzahl Stufen vom aktuellen Wert aus (zum Beispiel −5, wenn das Telefon klingelt). Bleibt im Bereich der Soundbar.",
+        "es": "Sube o baja el volumen un número de pasos desde el valor actual (por ejemplo −5 cuando suena el teléfono). Se limita al rango de la barra de sonido."
+      },
+      "fields": [
+        {
+          "key": "soundbar",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Soundbar",
+            "fr": "Barre de son",
+            "de": "Soundbar",
+            "es": "Barra de sonido"
+          },
+          "description": {
+            "en": "An LG Soundbar device. Leave empty for the first soundbar.",
+            "fr": "Un appareil LG Soundbar. Laissez vide pour la première barre de son.",
+            "de": "Ein LG-Soundbar-Gerät. Leer lassen für die erste Soundbar.",
+            "es": "Un dispositivo LG Soundbar. Déjelo vacío para la primera barra de sonido."
+          }
+        },
+        {
+          "key": "step",
+          "type": "number",
+          "required": true,
+          "default": -5,
+          "min": -20,
+          "max": 20,
+          "label": {
+            "en": "Steps",
+            "fr": "Crans",
+            "de": "Stufen",
+            "es": "Pasos"
+          },
+          "description": {
+            "en": "Negative lowers, positive raises.",
+            "fr": "Négatif baisse, positif monte.",
+            "de": "Negativ senkt, positiv erhöht.",
+            "es": "Negativo baja, positivo sube."
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "volume",
+          "type": "number",
+          "label": {
+            "en": "Volume",
+            "fr": "Volume",
+            "de": "Lautstärke",
+            "es": "Volumen"
+          }
+        }
+      ]
+    }
+  ]
+}
