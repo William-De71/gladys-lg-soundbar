@@ -5,7 +5,7 @@
 [![Licence : Apache-2.0](https://img.shields.io/badge/licence-Apache--2.0-blue.svg)](LICENSE)
 [![Dernière version](https://img.shields.io/github/v/release/William-De71/gladys-lg-soundbar?sort=semver)](https://github.com/William-De71/gladys-lg-soundbar/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/William-De71/gladys-lg-soundbar/release.yml?branch=main&label=CI)](https://github.com/William-De71/gladys-lg-soundbar/actions/workflows/release.yml)
-[![Gladys](https://img.shields.io/badge/Gladys-%E2%89%A5%205.1.0-2f6fb5)](https://gladysassistant.com)
+[![Gladys](https://img.shields.io/badge/Gladys-%E2%89%A5%205.3.0-2f6fb5)](https://gladysassistant.com)
 
 ![LG Soundbar pour Gladys Assistant](cover.jpg)
 
@@ -19,6 +19,7 @@ Non affiliée à LG Electronics. **Pas encore testée sur une vraie barre de son
 
 - **Barres de son trouvées toutes seules** (mDNS via Gladys : annonces LG et Chromecast), ou par leur adresse IP.
 - **Un appareil par barre de son**, avec ce que le modèle indique : marche/arrêt, volume (borné au maximum de la barre de son), muet, source et mode sonore (listes lues sur la barre de son), mode nuit, volume automatique, compression dynamique, allumage automatique, niveaux du caisson / des enceintes arrière / du canal central / des haut-parleurs verticaux en dB, lecture / pause, morceau et artiste en streaming, signal audio.
+- **Boîte Musique de Gladys 5.3** : quand de la musique est envoyée à la barre de son (Chromecast, AirPlay, Spotify Connect…), la boîte **Musique** du tableau de bord affiche le morceau, l’artiste et la pochette, avec lecture / pause, le volume et la sourdine. Ce que temescal ne donne pas (album, durée, position, suivant / précédent, aléatoire, répétition) n’est pas affiché.
 - **Poussé, pas interrogé** : une connexion gardée par barre de son ; un changement fait à la télécommande, par la TV (HDMI CEC) ou dans l’appli LG est dans Gladys en moins d’une seconde. Rien n’est demandé à une barre de son en veille, qu’une requête allumerait.
 - **5 déclencheurs de scène** (source changée, mode sonore changé, nouveau morceau, barre de son injoignable, de nouveau joignable), **2 actions de scène** (appliquer un préréglage son, changer le volume de quelques crans) et **1 widget de tableau de bord** (état, pochette du morceau, petite télécommande).
 - Local uniquement : ni compte, ni cloud, rien ne sort de votre réseau.
@@ -69,18 +70,19 @@ sequenceDiagram
 
 ## Appareils et fonctionnalités
 
-| Fonctionnalité                                           | Type Gladys             | Remarques                                                                                                                                                                                                   |
-| -------------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Marche/arrêt                                             | television / binary     | `b_powerkey` ; indiquée par les modèles récents (`b_powerstatus`), **supposée** sinon (dernier ordre, allumée quand elle sert, éteinte quand injoignable). Certains modèles ignorent l’arrêt par le réseau. |
-| Volume                                                   | television / volume     | de 0 au maximum indiqué par la barre de son (souvent 40)                                                                                                                                                    |
-| Muet                                                     | switch / binary         | 1 = son coupé                                                                                                                                                                                               |
-| Source                                                   | text / select           | sources listées par la barre de son (Wi-Fi, Bluetooth, Optique / HDMI ARC, HDMI…) ; une source courante hors liste s’affiche comme son équivalent listé (E-ARC → Optique / HDMI ARC)                        |
-| Mode sonore                                              | text / select           | modes listés par la barre de son (AI Sound Pro, Standard, Cinéma, Musique…)                                                                                                                                 |
-| Mode nuit, volume automatique, DRC, allumage automatique | switch / binary         | quand le modèle les indique                                                                                                                                                                                 |
-| Niveaux du caisson, arrière, central, verticaux          | television / volume, dB | la plage de la barre de son (−15 à +6 dB pour le caisson d’une SP8YA)                                                                                                                                       |
-| Lecture                                                  | music / playback_state  | 1 lecture, 0 pause ; seulement pour la musique envoyée à la barre de son                                                                                                                                    |
-| Morceau, artiste                                         | text                    | en streaming (Chromecast, AirPlay, Spotify Connect…)                                                                                                                                                        |
-| Signal audio                                             | text                    | modèles récents : « DOLBY AUDIO », « PCM », « NO SIGNAL »                                                                                                                                                   |
+| Fonctionnalité                                           | Type Gladys                                  | Remarques                                                                                                                                                                                                   |
+| -------------------------------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Marche/arrêt                                             | television / binary                          | `b_powerkey` ; indiquée par les modèles récents (`b_powerstatus`), **supposée** sinon (dernier ordre, allumée quand elle sert, éteinte quand injoignable). Certains modèles ignorent l’arrêt par le réseau. |
+| Volume                                                   | television / volume                          | de 0 au maximum indiqué par la barre de son (souvent 40)                                                                                                                                                    |
+| Muet                                                     | switch / binary                              | 1 = son coupé                                                                                                                                                                                               |
+| Source                                                   | text / select                                | sources listées par la barre de son (Wi-Fi, Bluetooth, Optique / HDMI ARC, HDMI…) ; une source courante hors liste s’affiche comme son équivalent listé (E-ARC → Optique / HDMI ARC)                        |
+| Mode sonore                                              | text / select                                | modes listés par la barre de son (AI Sound Pro, Standard, Cinéma, Musique…)                                                                                                                                 |
+| Mode nuit, volume automatique, DRC, allumage automatique | switch / binary                              | quand le modèle les indique                                                                                                                                                                                 |
+| Niveaux du caisson, arrière, central, verticaux          | television / volume, dB                      | la plage de la barre de son (−15 à +6 dB pour le caisson d’une SP8YA)                                                                                                                                       |
+| Lecture                                                  | music / playback_state                       | 1 lecture, 0 pause ; seulement pour la musique envoyée à la barre de son                                                                                                                                    |
+| Morceau, artiste                                         | text                                         | en streaming (Chromecast, AirPlay, Spotify Connect…)                                                                                                                                                        |
+| Lecteur : morceau, artiste, pochette, volume (%), muet   | music / title, artist, artwork, volume, mute | pour la boîte **Musique** de Gladys 5.3, avec la lecture ; textes vides quand rien n’est diffusé ; la pochette seulement depuis la barre de son elle-même ; le volume en pourcentage de sa plage            |
+| Signal audio                                             | text                                         | modèles récents : « DOLBY AUDIO », « PCM », « NO SIGNAL »                                                                                                                                                   |
 
 ## Déclencheurs, actions de scène et widgets
 
@@ -117,7 +119,7 @@ Exemples :
 
 ## Prérequis
 
-- Gladys Assistant **5.1.0** ou plus récent (widgets de tableau de bord et déclencheurs / actions de scène) : les instances plus anciennes ne peuvent pas installer l’intégration.
+- Gladys Assistant **5.3.0** ou plus récent (la boîte Musique ; widgets de tableau de bord et déclencheurs / actions de scène depuis la 5.1.0) : les instances plus anciennes ne peuvent pas installer l’intégration.
 - Une barre de son LG Wi-Fi configurée avec l’appli **LG Sound Bar** ou **Wi-Fi Speaker**, sur le même réseau que Gladys (ou joignable en TCP 9741 depuis lui). Certains modèles récents, pilotés uniquement par **LG ThinQ**, n’ouvrent pas le port 9741 (issue #14 de python-temescal) : ils ne peuvent pas fonctionner.
 - Une adresse IP fixe pour la barre de son (réservation DHCP) est préférable ; l’intégration suit une barre de son qui change d’adresse en la recherchant à nouveau.
 

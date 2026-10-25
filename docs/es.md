@@ -10,7 +10,7 @@ La integración no está afiliada a LG y aún no se ha probado con una barra de 
 
 ## Requisitos
 
-- Gladys Assistant 5.1.0 o posterior.
+- Gladys Assistant 5.3.0 o posterior.
 - La barra de sonido configurada en la app LG Sound Bar / Wi-Fi Speaker, conectada a la misma red que Gladys. Algunos modelos recientes controlados solo con **LG ThinQ** no abren el puerto 9741 y no pueden funcionar.
 - Idealmente, una dirección IP fija para la barra de sonido (una reserva DHCP en su router).
 
@@ -41,7 +41,12 @@ Abra la pestaña **Descubrir** de la integración y añada su barra de sonido. S
 | Modo noche, volumen automático, compresión dinámica, encendido automático      | Cuando el modelo los tiene.                                                                                                                                                                                            |
 | Niveles del subwoofer, altavoces traseros, canal central, altavoces verticales | En dB, dentro del rango de la barra de sonido.                                                                                                                                                                         |
 | Reproducción, canción, artista                                                 | Solo para la música transmitida a la barra de sonido (Chromecast, AirPlay, Spotify Connect…).                                                                                                                          |
+| Reproductor: canción, artista, carátula, volumen (%), silencio                 | Para la caja **Música** del panel, junto con la reproducción. El volumen es un porcentaje del rango de la barra de sonido.                                                                                             |
 | Señal de audio                                                                 | Modelos recientes: «DOLBY AUDIO», «PCM», «NO SIGNAL».                                                                                                                                                                  |
+
+### Caja Música
+
+Añada una caja **Música** a un panel y elija la barra de sonido. Mientras se le transmite música, la caja muestra la canción, el artista y la carátula, con reproducir / pausar, el volumen y el silencio. La barra de sonido no indica el álbum, la duración ni la posición, y no puede cambiar de canción: esos controles no aparecen. Algunos modelos no se pueden pausar por la red: la caja no se ofrece entonces.
 
 ### Widget del panel
 

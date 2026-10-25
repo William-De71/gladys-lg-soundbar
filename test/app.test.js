@@ -92,7 +92,7 @@ test('a typed address: found, read once, published with its uuid and the feature
   const [device] = gladys.fake.discoveredDevices;
   assert.equal(device.external_id, DEVICE);
   assert.equal(device.name, 'LG Speaker SP8YA');
-  assert.equal(device.features.length, 16);
+  assert.equal(device.features.length, 21);
   assert.deepEqual(
     gets(fake).map((message) => message.msg),
     [
@@ -390,4 +390,116 @@ test('a device created in Gladys is followed after a restart, even without /data
   // Published again once read (a few seconds later, grouped).
   await until(() => context.gladys.fake.discoveredDevices.length === 1, 4000);
   assert.equal(context.gladys.fake.discoveredDevices[0].external_id, DEVICE);
+});
+
+// --- The music box (Gladys 5.3) ----------------------------------------------
+
+const batchesWith = (gladys, key) =>
+  gladys.fake
+    .bodies('POST', '/state')
+    .map((body) => body.states.map((state) => state.device_feature_external_id))
+    .filter((ids) => ids.includes(feature(key)));
+
+test('the music box: what plays in one batch, the album art of the soundbar only', async (t) => {
+  const fetched = [];
+  const context = await setup(t, {
+    profile: 'S90QY',
+    fetchImage: async (url) => {
+      fetched.push(url);
+      return PNG;
+    },
+  });
+  const { fake, gladys } = context;
+  await create(context);
+  await until(() => /^Sinfonia/.test(gladys.fake.lastState(feature('music_title')) ?? ''));
+  assert.equal(gladys.fake.lastState(feature('music_artist')), 'Mozarteumorchester Salzburg');
+  assert.equal(gladys.fake.lastState(feature('music_artwork')), '', 'no album art');
+  assert.equal(gladys.fake.lastState(feature('playback')), 1);
+  assert.equal(gladys.fake.lastState(feature('music_mute')), 0);
+  assert.equal(typeof gladys.fake.lastState(feature('music_volume')), 'number');
+  // The old text features are still published, as before (a second later).
+  await until(() => /^Sinfonia/.test(gladys.fake.lastState(feature('title')) ?? ''));
+  // The track and the playback state in one batch.
+  const [first] = batchesWith(gladys, 'music_title');
+  assert.ok(first.includes(feature('playback')) && first.includes(feature('music_artist')));
+  assert.equal(batchesWith(gladys, 'playback').length, 1, 'playback published once');
+
+  // A new track: one batch of what changed, the album art as a key.
+  fake.remote(MSG.PLAY, {
+    s_title: 'Other',
+    s_artist: 'Someone',
+    s_albumart: 'http://127.0.0.1:7000/artwork?hash=2',
+  });
+  await until(() => gladys.fake.lastState(feature('music_title')) === 'Other');
+  const last = batchesWith(gladys, 'music_title').at(-1);
+  assert.deepEqual(
+    [...last].sort(),
+    [feature('music_artist'), feature('music_artwork'), feature('music_title')].sort(),
+    'playback unchanged: not sent again',
+  );
+  const key = gladys.fake.lastState(feature('music_artwork'));
+  assert.match(key, /^art-[0-9a-f]{12}$/);
+  const artwork = await gladys.fake.musicGetArtwork(key);
+  assert.equal(artwork.success, true);
+  assert.equal(artwork.data.image, PNG.toString('base64'));
+  assert.deepEqual(fetched, ['http://127.0.0.1:7000/artwork?hash=2']);
+  assert.equal((await gladys.fake.musicGetArtwork('art-000000000000')).success, false);
+
+  // Album art elsewhere than the soundbar: no artwork, never fetched.
+  fake.remote(MSG.PLAY, { s_albumart: 'http://192.0.2.1/x.jpg', s_title: 'Third' });
+  await until(() => gladys.fake.lastState(feature('music_title')) === 'Third');
+  assert.equal(gladys.fake.lastState(feature('music_artwork')), '');
+  assert.equal((await gladys.fake.musicGetArtwork(key)).success, false, 'no longer its art');
+  assert.equal(fetched.length, 1);
+
+  // Paused from the remote, then used as a soundbar: nothing loaded, empty texts.
+  fake.remote(MSG.PLAY, { i_play_ctrl: 1 });
+  await until(() => gladys.fake.lastState(feature('playback')) === 0);
+  fake.remote(MSG.PLAY, { i_stream_type: 0 });
+  await until(() => gladys.fake.lastState(feature('music_title')) === '');
+  assert.equal(gladys.fake.lastState(feature('music_artist')), '');
+  await until(() => gladys.fake.lastState(feature('title')) === '–', 3000); // its dash
+});
+
+test('the music box: play / pause, volume in %, mute, each state confirmed', async (t) => {
+  const context = await setup(t, { profile: 'S90QY' });
+  const { fake, gladys } = context;
+  const device = await create(context);
+  const byKey = (key) => device.features.find((f) => f.external_id === feature(key));
+  await until(() => gladys.fake.lastState(feature('playback')) === 1);
+
+  // Pause, then play: i_play_ctrl 1 / 0.
+  assert.equal((await gladys.fake.setValue(device, byKey('playback'), 0)).success, true);
+  await until(() => gladys.fake.lastState(feature('playback')) === 0);
+  assert.deepEqual(fake.sets().at(-1).data, { i_play_ctrl: 1 });
+  // Asked again while already paused: the state is sent anyway (has feedback).
+  const before = batchesWith(gladys, 'playback').length;
+  assert.equal((await gladys.fake.setValue(device, byKey('playback'), 0)).success, true);
+  await until(() => batchesWith(gladys, 'playback').length > before);
+  // No stop in temescal.
+  assert.equal((await gladys.fake.setValue(device, byKey('playback'), 2)).success, false);
+
+  // Mute through the music feature: the switch follows.
+  assert.equal((await gladys.fake.setValue(device, byKey('music_mute'), 1)).success, true);
+  await until(() => gladys.fake.lastState(feature('music_mute')) === 1);
+  await until(() => gladys.fake.lastState(feature('mute')) === 1);
+  assert.deepEqual(fake.sets().at(-1).data, { b_mute: true });
+});
+
+test('the music box volume is a percentage of the range of the soundbar', async (t) => {
+  const context = await setup(t);
+  const { fake, gladys } = context;
+  const device = await create(context);
+  const volume = device.features.find((f) => f.external_id === feature('music_volume'));
+  await until(() => gladys.fake.lastState(feature('music_volume')) === 18, 3000);
+  await until(() => gladys.fake.lastState(feature('volume')) === 7); // the soundbar volume stays
+  assert.equal((await gladys.fake.setValue(device, volume, 50)).success, true);
+  assert.deepEqual(fake.sets().at(-1).data, { i_vol: 20 }, '50 % of 0-40');
+  await until(() => gladys.fake.lastState(feature('music_volume')) === 50);
+  await until(() => gladys.fake.lastState(feature('volume')) === 20);
+  // 51 % is still 20: the state is confirmed all the same.
+  const before = batchesWith(gladys, 'music_volume').length;
+  assert.equal((await gladys.fake.setValue(device, volume, 51)).success, true);
+  await until(() => batchesWith(gladys, 'music_volume').length > before);
+  assert.equal(gladys.fake.lastState(feature('music_volume')), 50);
 });

@@ -10,7 +10,7 @@ Die Integration ist nicht mit LG verbunden und wurde noch nicht mit einer echten
 
 ## Voraussetzungen
 
-- Gladys Assistant 5.1.0 oder neuer.
+- Gladys Assistant 5.3.0 oder neuer.
 - Die Soundbar in der App LG Sound Bar / Wi-Fi Speaker eingerichtet und mit demselben Netzwerk wie Gladys verbunden. Manche neuen Modelle, die nur über **LG ThinQ** gesteuert werden, öffnen Port 9741 nicht und funktionieren nicht.
 - Am besten eine feste IP-Adresse für die Soundbar (eine DHCP-Reservierung im Router).
 
@@ -41,7 +41,12 @@ Drücke **Soundbars suchen und testen**: Es listet jede gefundene Soundbar mit A
 | Nachtmodus, automatische Lautstärke, Dynamikkompression, automatisches Einschalten | Wenn das Modell sie hat.                                                                                                                                                                                           |
 | Pegel von Subwoofer, Rücklautsprechern, Center, Höhenlautsprechern                 | In dB, im Bereich der Soundbar.                                                                                                                                                                                    |
 | Wiedergabe, Titel, Interpret                                                       | Nur für Musik, die an die Soundbar gestreamt wird (Chromecast, AirPlay, Spotify Connect…).                                                                                                                         |
+| Player: Titel, Interpret, Cover, Lautstärke (%), Stummschaltung                    | Für die **Musik**-Box des Dashboards, zusammen mit der Wiedergabe. Die Lautstärke ist ein Prozentsatz des Bereichs der Soundbar.                                                                                   |
 | Audiosignal                                                                        | Neue Modelle: „DOLBY AUDIO“, „PCM“, „NO SIGNAL“.                                                                                                                                                                   |
+
+### Musik-Box
+
+Füge einem Dashboard eine **Musik**-Box hinzu und wähle die Soundbar. Während Musik an sie gestreamt wird, zeigt die Box Titel, Interpret und Cover, mit Wiedergabe / Pause, Lautstärke und Stummschaltung. Die Soundbar meldet weder Album noch Dauer oder Position und kann keinen Titel überspringen: Diese Bedienelemente erscheinen nicht. Manche Modelle lassen sich über das Netzwerk nicht pausieren: Die Box wird dann nicht angeboten.
 
 ### Dashboard-Widget
 

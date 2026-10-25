@@ -24,7 +24,20 @@
 //                                     playing, 0 paused), writable when
 //                                     b_support_play_ctrl
 //   title, artist  text/text          the track while streaming
+//   music_title, music_artist, music_artwork
+//                  music/title, music/artist, music/artwork  the same track
+//                                     for the music box of Gladys 5.3 (an
+//                                     empty text when nothing plays; the
+//                                     artwork is a key, served on demand)
+//   music_volume   music/volume       i_vol as 0-100 % (the music box slider)
+//   music_mute     music/mute         b_mute (the mute button of the box)
 //   audio_signal   text/text          s_audio_source ("DOLBY AUDIO")
+//
+// The music_* features exist with the playback feature only. Like a TV, the
+// soundbar keeps its own controls (television/volume, switch/binary mute)
+// and adds the music types beside them: the old features stay as they are,
+// users have scenes and dashboards on them. The player features (playback,
+// music_*) are published by `publishNowPlaying`, see `nowPlaying`.
 //
 // The ranges (volume, levels) are read from the soundbar when it is
 // discovered: the Discover "Update" compares `min` and `max`.
@@ -59,6 +72,21 @@ export const FEATURES = {
   TITLE: 'title',
   ARTIST: 'artist',
   AUDIO_SIGNAL: 'audio_signal',
+  MUSIC_TITLE: 'music_title',
+  MUSIC_ARTIST: 'music_artist',
+  MUSIC_ARTWORK: 'music_artwork',
+  MUSIC_VOLUME: 'music_volume',
+  MUSIC_MUTE: 'music_mute',
+};
+
+// Music feature type (key of `publishNowPlaying`) -> feature key.
+export const NOW_PLAYING_FEATURES = {
+  playback_state: FEATURES.PLAYBACK,
+  title: FEATURES.MUSIC_TITLE,
+  artist: FEATURES.MUSIC_ARTIST,
+  artwork: FEATURES.MUSIC_ARTWORK,
+  volume: FEATURES.MUSIC_VOLUME,
+  mute: FEATURES.MUSIC_MUTE,
 };
 
 export const levelFeature = (level) => `${level}_level`;
@@ -143,6 +171,17 @@ const text = (readOnly = true) => ({
   keep_history: false,
 });
 
+// A string state of the music box: never historized, written by the soundbar.
+const musicText = (type) => ({
+  category: CATEGORIES.MUSIC,
+  type,
+  min: 0,
+  max: 0,
+  read_only: true,
+  has_feedback: true,
+  keep_history: false,
+});
+
 const select = (options) => ({
   category: CATEGORIES.TEXT,
   type: TYPES.TEXT.SELECT,
@@ -219,6 +258,31 @@ export function featureSpecs(state, language) {
     ]);
     specs.push([FEATURES.TITLE, text()]);
     specs.push([FEATURES.ARTIST, text()]);
+    specs.push([FEATURES.MUSIC_TITLE, musicText(TYPES.MUSIC.TITLE)]);
+    specs.push([FEATURES.MUSIC_ARTIST, musicText(TYPES.MUSIC.ARTIST)]);
+    specs.push([FEATURES.MUSIC_ARTWORK, musicText(TYPES.MUSIC.ARTWORK)]);
+    if (Number.isInteger(state.volumeMax)) {
+      specs.push([
+        FEATURES.MUSIC_VOLUME,
+        {
+          category: CATEGORIES.MUSIC,
+          type: TYPES.MUSIC.VOLUME,
+          unit: UNITS.PERCENT,
+          min: 0,
+          max: 100,
+          step: 1,
+          read_only: false,
+          has_feedback: true,
+          keep_history: false,
+        },
+      ]);
+    }
+    if (typeof state.mute === 'boolean') {
+      specs.push([
+        FEATURES.MUSIC_MUTE,
+        { ...binary(CATEGORIES.MUSIC, TYPES.MUSIC.MUTE), keep_history: false },
+      ]);
+    }
   }
   if (typeof state.audioSource === 'string') {
     specs.push([FEATURES.AUDIO_SIGNAL, text()]);
@@ -307,6 +371,88 @@ export function featureValues(entry) {
   }
   if (typeof state.audioSource === 'string') {
     values.push([FEATURES.AUDIO_SIGNAL, { text: state.audioSource || NO_TEXT }]);
+  }
+  return values;
+}
+
+/**
+ * @description The volume range of a soundbar.
+ * @param {object} state - The soundbar state.
+ * @returns {{ min: number, max: number }} The range (raw values).
+ */
+export function volumeRange(state) {
+  const min = Number.isInteger(state.volumeMin) ? state.volumeMin : 0;
+  const max = Number.isInteger(state.volumeMax) ? Math.max(min + 1, state.volumeMax) : 100;
+  return { min, max };
+}
+
+/**
+ * @description The volume of a soundbar as 0-100 % of its range (the music
+ * box shows a percentage; the soundbar counts 0-40 or so).
+ * @param {object} state - The soundbar state.
+ * @returns {number|null} The percentage, null when unknown.
+ */
+export function volumePercent(state) {
+  if (!Number.isInteger(state.volume)) {
+    return null;
+  }
+  const { min, max } = volumeRange(state);
+  const percent = Math.round(((state.volume - min) / (max - min)) * 100);
+  return Math.min(100, Math.max(0, percent));
+}
+
+/**
+ * @description The album art URL of a soundbar, when Gladys may get it: an
+ * http URL of the soundbar itself, never an address elsewhere.
+ * @param {object} entry - `{ state, host }`.
+ * @returns {string|null} The URL.
+ */
+export function albumArtUrl(entry) {
+  const url = entry.state?.play?.albumArt;
+  const streaming =
+    Number.isInteger(entry.state?.play?.streamType) && entry.state.play.streamType !== 0;
+  if (!url || !streaming) {
+    return null;
+  }
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return null;
+  }
+  return parsed.protocol === 'http:' && parsed.hostname === entry.host ? url : null;
+}
+
+/**
+ * @description What a soundbar plays, for `publishNowPlaying` (keys:
+ * music feature types): only the features it has. Nothing loaded is an
+ * explicit empty text (Gladys 5.3 keeps it), an absent key is unchanged.
+ * temescal tells the title, the artist, the album art and play / pause
+ * (`i_play_ctrl`, python-temescal: "Playing", "Stopped/Paused"): no album,
+ * duration, position, shuffle nor repeat.
+ * @param {object} entry - `{ state, host }`.
+ * @returns {object|null} The values, null when the soundbar has no player.
+ */
+export function nowPlaying(entry) {
+  const { state } = entry;
+  const present = new Set(featureSpecs(state, 'en').map(([key]) => key));
+  if (!present.has(FEATURES.PLAYBACK)) {
+    return null;
+  }
+  const values = {};
+  const play = state.play;
+  if (Number.isInteger(play.streamType) || typeof play.playing === 'boolean') {
+    const streaming = Number.isInteger(play.streamType) && play.streamType !== 0;
+    values.playback_state = flag(streaming && play.playing === true);
+    values.title = (streaming && play.title) || '';
+    values.artist = (streaming && play.artist) || '';
+    values.artwork_url = albumArtUrl(entry);
+  }
+  if (present.has(FEATURES.MUSIC_VOLUME) && volumePercent(state) !== null) {
+    values.volume = volumePercent(state);
+  }
+  if (present.has(FEATURES.MUSIC_MUTE)) {
+    values.mute = flag(state.mute);
   }
   return values;
 }

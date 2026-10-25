@@ -7,12 +7,15 @@
 //   scan             mDNS through Gladys + typed addresses, each new address
 //                    tried on port 9741, then a full reading
 //   states           pushed by the soundbars on their open connection,
-//                    published as they come (src/states.js)
+//                    published as they come (src/states.js); the player
+//                    features through publishNowPlaying (one batch, diffed)
 //   commands         onSetValue, scene actions and widget buttons -> `set`,
 //                    then the state read back
 //   scene events     changes made outside Gladys only (src/scenes.js)
 //   widget           src/widgets.js, with the album art served by the
 //                    soundbar (fetched from its own address only, checked)
+//   music box        the album art behind the artwork key, on demand, from
+//                    the soundbar's own address only (onMusicGetArtwork)
 //   status           the soundbars unreachable for 2 minutes
 // -----------------------------------------------------------------------------
 
@@ -22,7 +25,16 @@ import { normalizeConfig } from './config.js';
 import { createStatePublisher } from './states.js';
 import { createStorage } from './storage.js';
 import { Soundbar } from './soundbar.js';
-import { DEVICE_TYPE, FEATURES, buildDevice, deviceName, featureValues } from './devices.js';
+import {
+  DEVICE_TYPE,
+  FEATURES,
+  NOW_PLAYING_FEATURES,
+  albumArtUrl,
+  buildDevice,
+  deviceName,
+  featureValues,
+  nowPlaying,
+} from './devices.js';
 import { CommandError, commandFor, presetCommands, steppedVolume } from './commands.js';
 import { ACTIONS, TRIGGERS, sourceEvent, soundModeEvent, trackEvent } from './scenes.js';
 import { BUTTONS, WIDGET_KEY, buildSoundbarWidget, powerOf } from './widgets.js';
@@ -166,11 +178,37 @@ export function createApp(gladys, deps = {}) {
     discoveredTimer.unref?.();
   };
 
+  const playerIdsOf = (bar) => {
+    const ids = idsOf(bar);
+    return Object.fromEntries(
+      Object.entries(NOW_PLAYING_FEATURES).map(([type, key]) => [type, ids.feature(key)]),
+    );
+  };
+
+  // What plays, on the events of the soundbar only (never on a timer): the
+  // SDK diffs it against what Gladys has and sends the changes as one batch,
+  // so a new track is one redraw of the music box.
+  const publishPlaying = (bar) => {
+    const device = idsOf(bar).device;
+    const values = created.has(device) ? nowPlaying(bar) : null;
+    if (!values || Object.keys(values).length === 0) {
+      return Promise.resolve();
+    }
+    return safely(
+      () => gladys.publishNowPlaying(device, values, { featureExternalIds: playerIdsOf(bar) }),
+      'publishing what plays',
+    );
+  };
+
   const pushValues = (bar) => {
     const ids = idsOf(bar);
     for (const [key, value] of featureValues(bar)) {
-      states.push(ids.feature(key), value);
+      // The playback goes with the track, through publishPlaying.
+      if (key !== FEATURES.PLAYBACK) {
+        states.push(ids.feature(key), value);
+      }
     }
+    return publishPlaying(bar);
   };
 
   const refreshWidget = (force = false) => {
@@ -491,6 +529,10 @@ export function createApp(gladys, deps = {}) {
     const key = String(feature?.external_id ?? '')
       .split(':')
       .pop();
+    const type = Object.keys(NOW_PLAYING_FEATURES).find(
+      (name) => NOW_PLAYING_FEATURES[name] === key,
+    );
+    const before = type ? nowPlaying(bar)?.[type] : undefined;
     try {
       await command(bar, key, value);
     } catch (error) {
@@ -499,7 +541,19 @@ export function createApp(gladys, deps = {}) {
       // Gladys shows the value asked for: publish the real one.
       states.forget(feature?.external_id);
       if (key === FEATURES.POWER) states.forget(idsOf(bar).feature(FEATURES.POWER));
-      pushValues(bar);
+      await pushValues(bar);
+      // The music box waits for the state of the feature it wrote (has
+      // feedback): send it even when the soundbar did not change.
+      const after = type ? nowPlaying(bar)?.[type] : undefined;
+      if (after !== undefined && after === before && created.has(idsOf(bar).device)) {
+        await safely(
+          () =>
+            gladys.publishStates([
+              { device_feature_external_id: idsOf(bar).feature(key), state: after },
+            ]),
+          'publishing the state asked for',
+        );
+      }
       refreshWidget();
     }
   });
@@ -663,25 +717,14 @@ export function createApp(gladys, deps = {}) {
   // --- Widget --------------------------------------------------------------------------------------
 
   const albumArtKey = async (bar) => {
-    const url = bar.state.play?.albumArt;
-    const streaming =
-      Number.isInteger(bar.state.play?.streamType) && bar.state.play.streamType !== 0;
-    if (!url || !streaming) {
+    // Only from the soundbar itself, never a URL elsewhere.
+    const url = albumArtUrl(bar);
+    if (!url) {
       return null;
     }
     const cached = imageOf.get(bar.id);
     if (cached?.url === url) {
       return cached.key;
-    }
-    let parsed;
-    try {
-      parsed = new URL(url);
-    } catch {
-      return null;
-    }
-    // Only from the soundbar itself, never a URL elsewhere.
-    if (parsed.protocol !== 'http:' || parsed.hostname !== bar.host) {
-      return null;
     }
     try {
       const bytes = await fetchImage(url);
@@ -724,6 +767,23 @@ export function createApp(gladys, deps = {}) {
       throw new Error('image not available');
     }
     return image;
+  });
+
+  // The music box asks for the artwork key it was given (publishNowPlaying
+  // made it from the album art URL). The URL is fetched only while it is the
+  // album art of a soundbar at that address: never a URL elsewhere.
+  gladys.onMusicGetArtwork(async (key) => {
+    const url = gladys.artworkUrls?.get(key);
+    const owner = url && [...bars.values()].find((bar) => albumArtUrl(bar) === url);
+    if (!owner) {
+      throw new Error('artwork not available');
+    }
+    const base64 = (await fetchImage(url)).toString('base64');
+    const issues = validateWidgetImage(base64);
+    if (issues.length > 0) {
+      throw new Error(`artwork refused: ${issues[0]}`);
+    }
+    return base64;
   });
 
   gladys.onWidgetAction(WIDGET_KEY, async (actionKey, params = {}) => {

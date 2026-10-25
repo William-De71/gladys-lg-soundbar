@@ -10,7 +10,7 @@ The integration is not affiliated with LG and has not been tested with a real so
 
 ## Prerequisites
 
-- Gladys Assistant 5.1.0 or later.
+- Gladys Assistant 5.3.0 or later.
 - The soundbar set up in the LG Sound Bar / Wi-Fi Speaker app, connected to the same network as Gladys. Some recent models controlled only by **LG ThinQ** do not open port 9741 and cannot work.
 - Ideally, a fixed IP address for the soundbar (a DHCP reservation in your router).
 
@@ -41,7 +41,12 @@ Open the **Discover** tab of the integration and add your soundbar. Its features
 | Night mode, auto volume, dynamic range control, auto power on | When the model has them.                                                                                                                                                              |
 | Subwoofer, rear, center, up-firing levels                     | In dB, within the range of the soundbar.                                                                                                                                              |
 | Playback, track, artist                                       | Only for music streamed to the soundbar (Chromecast, AirPlay, Spotify Connect…).                                                                                                      |
+| Player: track, artist, cover, volume (%), mute                | For the **Music** box of the dashboard, with the playback. The volume is a percentage of the range of the soundbar.                                                                   |
 | Audio signal                                                  | Recent models: "DOLBY AUDIO", "PCM", "NO SIGNAL".                                                                                                                                     |
+
+### Music box
+
+Add a **Music** box to a dashboard and choose the soundbar. While music is streamed to it, the box shows the track, the artist and the cover, with play / pause, the volume and mute. The soundbar does not tell the album, the duration nor the position, and cannot skip a track: those controls do not appear. Some models cannot be paused over the network: the box is then not offered.
 
 ### Dashboard widget
 

@@ -5,7 +5,9 @@
 // saved configuration refers to.
 //
 // test/fixtures/discovery.baseline.json was generated from version 0.1.0 (the
-// first release). A failure here means existing users would have to delete
+// first release); the music box features (music_title, music_artist,
+// music_artwork, music_volume, music_mute) were added to it afterwards,
+// nothing of 0.1.0 changed. A failure here means existing users would have to delete
 // and recreate a device, or would lose a scene or a widget setting: never
 // update the baseline without a documented migration
 // (UPDATE_BASELINE=1 npm test rewrites it, on purpose only).

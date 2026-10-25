@@ -101,3 +101,21 @@ test('relative volume stays within the range', () => {
   assert.equal(steppedVolume(state, 50), 40);
   refused(() => steppedVolume(emptyState(), 1), 'errorVolumeUnknown');
 });
+
+test('the music box: volume in % of the range, mute, play and pause only', () => {
+  const state = stateOf('SP8YA');
+  assert.deepEqual(commandFor(state, 'music_volume', 50), {
+    msg: MSG.SPEAKER,
+    data: { i_vol: 20 },
+  });
+  assert.deepEqual(commandFor(state, 'music_volume', 140).data, { i_vol: 40 });
+  assert.deepEqual(commandFor(state, 'music_volume', -3).data, { i_vol: 0 });
+  refused(() => commandFor(state, 'music_volume', 'loud'), 'errorValue');
+  assert.deepEqual(commandFor(state, 'music_mute', 1), {
+    msg: MSG.SPEAKER,
+    data: { b_mute: true },
+  });
+  const s90 = stateOf('S90QY');
+  refused(() => commandFor(s90, 'playback', 2), 'errorValue');
+  refused(() => commandFor(s90, 'playback', 3), 'errorValue');
+});

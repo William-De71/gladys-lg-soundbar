@@ -10,6 +10,10 @@
 //                       b_auto_power, i_<speaker>_level (raw = dB - min)
 //   PLAY_INFO           i_play_ctrl (0 play, 1 pause)
 //
+// The music box features of Gladys 5.3 go to the same fields: music_volume
+// (0-100 % of the range) to i_vol, music_mute to b_mute. temescal has no
+// stop, next, previous nor seek: playback takes 0 (pause) and 1 (play) only.
+//
 // Values are checked against what the soundbar reported (volume range,
 // inputs, sound modes, level ranges): a value outside is refused with a
 // message rather than sent.
@@ -18,7 +22,7 @@
 import { MSG } from './temescal/protocol.js';
 import { SWITCHES, levelOf } from './temescal/model.js';
 import { optionIndex } from './temescal/names.js';
-import { FEATURES } from './devices.js';
+import { FEATURES, volumeRange } from './devices.js';
 
 /** A command Gladys cannot send, with the text key of its explanation. */
 export class CommandError extends Error {
@@ -52,7 +56,14 @@ export function commandFor(state, key, value) {
       const max = Number.isInteger(state.volumeMax) ? state.volumeMax : 100;
       return { msg: MSG.SPEAKER, data: { i_vol: clampInt(value, min, max) } };
     }
+    case FEATURES.MUSIC_VOLUME: {
+      if (!Number.isFinite(Number(value))) throw new CommandError('errorValue');
+      const { min, max } = volumeRange(state);
+      const percent = clampInt(value, 0, 100);
+      return { msg: MSG.SPEAKER, data: { i_vol: min + Math.round(((max - min) * percent) / 100) } };
+    }
     case FEATURES.MUTE:
+    case FEATURES.MUSIC_MUTE:
       return { msg: MSG.SPEAKER, data: { b_mute: asBool(value) } };
     case FEATURES.SOURCE: {
       const index = optionIndex('func', value);
@@ -76,6 +87,8 @@ export function commandFor(state, key, value) {
     case FEATURES.PLAYBACK:
       if (state.play?.supportControl !== true) throw new CommandError('errorNotSupported');
       if (state.play?.streamType === 0) throw new CommandError('errorNotStreaming');
+      // Gladys 5.3 may write 2 (stop) or 3 (buffering): no such order here.
+      if (Number(value) > 1) throw new CommandError('errorValue');
       return { msg: MSG.PLAY, data: { i_play_ctrl: asBool(value) ? 0 : 1 } };
     default:
       break;

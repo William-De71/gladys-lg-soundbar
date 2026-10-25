@@ -54,13 +54,17 @@ test('declares the local transport: port 9741 of the soundbar, nothing on the in
       file,
     );
   }
-  assert.match(source('../src/app.js'), /parsed\.hostname !== bar\.host/);
+  assert.match(source('../src/devices.js'), /parsed\.hostname === entry\.host/);
+  assert.match(source('../src/app.js'), /albumArtUrl\(bar\) === url/, 'music box artwork');
   // A single channel: no transport to publish per device.
   assert.doesNotMatch(source('../src/app.js'), /publishTransports|GLADYS_PREFER_LOCAL/);
 });
 
-test('widgets and scenes need Gladys 5.1.0; only the mDNS discovery permission', () => {
-  assert.equal(manifest.gladys_version, '>=5.1.0');
+test('the music box needs Gladys 5.3.0; only the mDNS discovery permission', () => {
+  // `music` (the music box, artwork served on demand) needs 5.3.0; widgets
+  // and scenes 5.1.0.
+  assert.equal(manifest.gladys_version, '>=5.3.0');
+  assert.deepEqual(manifest.music, {}, 'no catalog, no queue: temescal has none');
   assert.deepEqual(manifest.categories, ['multimedia']);
   assert.deepEqual(
     manifest.network_discovery,

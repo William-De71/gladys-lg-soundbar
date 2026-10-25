@@ -5,7 +5,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/William-De71/gladys-lg-soundbar?sort=semver)](https://github.com/William-De71/gladys-lg-soundbar/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/William-De71/gladys-lg-soundbar/release.yml?branch=main&label=CI)](https://github.com/William-De71/gladys-lg-soundbar/actions/workflows/release.yml)
-[![Gladys](https://img.shields.io/badge/Gladys-%E2%89%A5%205.1.0-2f6fb5)](https://gladysassistant.com)
+[![Gladys](https://img.shields.io/badge/Gladys-%E2%89%A5%205.3.0-2f6fb5)](https://gladysassistant.com)
 
 ![LG Soundbar for Gladys Assistant](cover.jpg)
 
@@ -19,6 +19,7 @@ Not affiliated with LG Electronics. **Not tested with a real soundbar yet**: the
 
 - **Soundbars found by themselves** (mDNS through Gladys: the LG and Chromecast announcements), or by their IP address.
 - **One device per soundbar**, with what the model reports: power, volume (bounded to the maximum of the soundbar), mute, input and sound mode (lists read from the soundbar), night mode, auto volume, dynamic range control, auto power on, subwoofer / rear / center / up-firing levels in dB, play / pause, track and artist while streaming, audio signal.
+- **Music box of Gladys 5.3**: while music is streamed to the soundbar (Chromecast, AirPlay, Spotify Connect…), the dashboard **Music** box shows the track, the artist and the cover, with play / pause, the volume and mute. What temescal does not give (album, duration, position, next / previous, shuffle, repeat) is not shown.
 - **Pushed, not polled**: one connection kept per soundbar; a change made with the remote, the TV (HDMI CEC) or the LG app is in Gladys within a second. Nothing is asked to a soundbar in standby, which a request would switch on.
 - **5 scene triggers** (input changed, sound mode changed, new track, soundbar unreachable, reachable again), **2 scene actions** (apply a sound preset, change the volume by steps) and **1 dashboard widget** (state, cover of the track, a small remote).
 - Local only: no account, no cloud, nothing leaves your network.
@@ -69,18 +70,19 @@ sequenceDiagram
 
 ## Devices and features
 
-| Feature                                     | Gladys type             | Notes                                                                                                                                                                         |
-| ------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Power                                       | television / binary     | `b_powerkey`; reported by recent models (`b_powerstatus`), **assumed** otherwise (last order, on when used, off when unreachable). Some models ignore "off" over the network. |
-| Volume                                      | television / volume     | 0 to the maximum the soundbar reports (often 40)                                                                                                                              |
-| Mute                                        | switch / binary         | 1 = muted                                                                                                                                                                     |
-| Input                                       | text / select           | inputs listed by the soundbar (Wi-Fi, Bluetooth, Optical / HDMI ARC, HDMI…); an unlisted current input shows as its listed equivalent (E-ARC → Optical / HDMI ARC)            |
-| Sound mode                                  | text / select           | sound modes listed by the soundbar (AI Sound Pro, Standard, Cinema, Music…)                                                                                                   |
-| Night mode, auto volume, DRC, auto power on | switch / binary         | when the model reports them                                                                                                                                                   |
-| Subwoofer, rear, center, up-firing levels   | television / volume, dB | the range of the soundbar (−15 to +6 dB for the subwoofer of an SP8YA)                                                                                                        |
-| Playback                                    | music / playback_state  | 1 playing, 0 paused; only for music streamed to the soundbar                                                                                                                  |
-| Track, artist                               | text                    | while streaming (Chromecast, AirPlay, Spotify Connect…)                                                                                                                       |
-| Audio signal                                | text                    | recent models: "DOLBY AUDIO", "PCM", "NO SIGNAL"                                                                                                                              |
+| Feature                                        | Gladys type                                  | Notes                                                                                                                                                                          |
+| ---------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Power                                          | television / binary                          | `b_powerkey`; reported by recent models (`b_powerstatus`), **assumed** otherwise (last order, on when used, off when unreachable). Some models ignore "off" over the network.  |
+| Volume                                         | television / volume                          | 0 to the maximum the soundbar reports (often 40)                                                                                                                               |
+| Mute                                           | switch / binary                              | 1 = muted                                                                                                                                                                      |
+| Input                                          | text / select                                | inputs listed by the soundbar (Wi-Fi, Bluetooth, Optical / HDMI ARC, HDMI…); an unlisted current input shows as its listed equivalent (E-ARC → Optical / HDMI ARC)             |
+| Sound mode                                     | text / select                                | sound modes listed by the soundbar (AI Sound Pro, Standard, Cinema, Music…)                                                                                                    |
+| Night mode, auto volume, DRC, auto power on    | switch / binary                              | when the model reports them                                                                                                                                                    |
+| Subwoofer, rear, center, up-firing levels      | television / volume, dB                      | the range of the soundbar (−15 to +6 dB for the subwoofer of an SP8YA)                                                                                                         |
+| Playback                                       | music / playback_state                       | 1 playing, 0 paused; only for music streamed to the soundbar                                                                                                                   |
+| Track, artist                                  | text                                         | while streaming (Chromecast, AirPlay, Spotify Connect…)                                                                                                                        |
+| Player: track, artist, cover, volume (%), mute | music / title, artist, artwork, volume, mute | for the **Music** box of Gladys 5.3, with the playback; empty texts when nothing is streamed; the cover only from the soundbar itself; the volume as a percentage of its range |
+| Audio signal                                   | text                                         | recent models: "DOLBY AUDIO", "PCM", "NO SIGNAL"                                                                                                                               |
 
 ## Scene triggers, actions and widgets
 
@@ -117,7 +119,7 @@ Examples:
 
 ## Requirements
 
-- Gladys Assistant **5.1.0** or later (dashboard widgets and scene triggers / actions): older instances cannot install the integration.
+- Gladys Assistant **5.3.0** or later (the Music box; dashboard widgets and scene triggers / actions since 5.1.0): older instances cannot install the integration.
 - An LG Wi-Fi soundbar set up with the **LG Sound Bar** or **Wi-Fi Speaker** app, on the same network as Gladys (or reachable on TCP 9741 from it). Some recent models, controlled only by **LG ThinQ**, do not open port 9741 (python-temescal issue #14): they cannot work.
 - A fixed IP address for the soundbar (DHCP reservation) is best; the integration follows a soundbar that changes address by searching again.
 

@@ -69,6 +69,36 @@ const TEXTS = {
   feature_playback: { en: 'Playback', fr: 'Lecture', de: 'Wiedergabe', es: 'Reproducción' },
   feature_title: { en: 'Track', fr: 'Morceau', de: 'Titel', es: 'Canción' },
   feature_artist: { en: 'Artist', fr: 'Artiste', de: 'Interpret', es: 'Artista' },
+  feature_music_title: {
+    en: 'Player: track',
+    fr: 'Lecteur : morceau',
+    de: 'Player: Titel',
+    es: 'Reproductor: canción',
+  },
+  feature_music_artist: {
+    en: 'Player: artist',
+    fr: 'Lecteur : artiste',
+    de: 'Player: Interpret',
+    es: 'Reproductor: artista',
+  },
+  feature_music_artwork: {
+    en: 'Player: cover',
+    fr: 'Lecteur : pochette',
+    de: 'Player: Cover',
+    es: 'Reproductor: carátula',
+  },
+  feature_music_volume: {
+    en: 'Player: volume (%)',
+    fr: 'Lecteur : volume (%)',
+    de: 'Player: Lautstärke (%)',
+    es: 'Reproductor: volumen (%)',
+  },
+  feature_music_mute: {
+    en: 'Player: mute',
+    fr: 'Lecteur : muet',
+    de: 'Player: Stummschaltung',
+    es: 'Reproductor: silencio',
+  },
   feature_audio_signal: {
     en: 'Audio signal',
     fr: 'Signal audio',

@@ -12,7 +12,8 @@ build step) in its own sandboxed Docker container, talking to Gladys through
 its only runtime dependency, and to the soundbars **on the local network
 only** (`transports: ["local"]`) over their "temescal" protocol: TCP port
 9741, frames `0x10` + 4-byte big-endian length + AES-256-CBC JSON with a
-fixed key and IV. `type: "device"`, Gladys 5.1.0+ (widget, scenes),
+fixed key and IV. `type: "device"`, Gladys 5.3.0+ (music box; widget and
+scenes since 5.1.0), manifest `music: {}` (no catalog, no queue),
 `network_discovery` mDNS `_lg-smart-device._tcp` and `_googlecast._tcp`.
 
 The protocol is rewritten from [python-temescal](https://github.com/google/python-temescal)
@@ -72,7 +73,8 @@ scripts/check-simulator.sh   python-temescal 0.5 against the fake soundbar
   else `mac-<12 hex>`, else `ip-a-b-c-d`), features `…:<key>` (`power`,
   `volume`, `mute`, `source`, `sound_mode`, `night_mode`, `auto_volume`,
   `drc`, `auto_power`, `woofer_level`, `rear_level`, `center_level`,
-  `top_level`, `playback`, `title`, `artist`, `audio_signal`), the select
+  `top_level`, `playback`, `title`, `artist`, `audio_signal`, `music_title`,
+  `music_artist`, `music_artwork`, `music_volume`, `music_mute`), the select
   values (`func-<index>`, `eq-<index>`: indexes, never names), feature
   `category` / `type` / `unit` / `min` / `max` / `step`, the keys of
   `config_schema` and `actions`, the widget and its settings, the triggers
@@ -83,6 +85,15 @@ scripts/check-simulator.sh   python-temescal 0.5 against the fake soundbar
 - **Never invent a message or a field**: every `get` / `set` is in
   python-temescal 0.5 or in the Home Assistant integration (`b_powerkey`,
   `i_play_ctrl`). A new one needs its source in a comment and in the fake.
+- **The music box** (Gladys 5.3): the player features (`playback` and the
+  `music_*` ones, `NOW_PLAYING_FEATURES`) go through `publishNowPlaying`
+  (diffed, one batch) on the soundbar's events only, never through
+  src/states.js; the old `title` / `artist` texts and the television volume /
+  switch mute stay as they were. temescal has play / pause only (no stop,
+  next, previous, seek, album, duration, position, shuffle, repeat): never
+  publish those. The artwork key is `artworkKey(url)` of the album art URL of
+  the soundbar itself; `onMusicGetArtwork` serves it only while it is the
+  current album art of a soundbar.
 - **Never ask a soundbar anything by itself except** the full reading at
   discovery, at the first connection and after it was unreachable (and never
   with `quiet_start`): a request wakes a soundbar in standby. No polling, no
@@ -134,8 +145,11 @@ scripts/check-simulator.sh   python-temescal 0.5 against the fake soundbar
   stay usable as "Sound mode 27".
 - python-temescal writes the frame length on one byte; this client writes
   four (the soundbar does).
-- Gladys 5.1 / 5.2 show `music/playback_state` as a value; master as a
-  play / pause switch.
+- Gladys 5.1 / 5.2 show `music/playback_state` as a value; 5.3 as a
+  play / pause switch. `playback` keeps `max: 1` (eternal): Gladys 5.3 may
+  write 2 (stop), refused with `errorValue`.
+- Empty music texts are valid in 5.3 (`''` clears the track); the old text
+  features keep `NO_TEXT`.
 - `node --test` also runs `test/helpers/`: nothing starts on import.
 - The validator of the Gladys core creates `gladys-development.duckdb` in the
   current folder: run it from elsewhere.

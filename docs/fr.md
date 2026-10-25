@@ -10,7 +10,7 @@ L’intégration n’est pas affiliée à LG et n’a pas encore été testée s
 
 ## Prérequis
 
-- Gladys Assistant 5.1.0 ou plus récent.
+- Gladys Assistant 5.3.0 ou plus récent.
 - La barre de son configurée dans l’appli LG Sound Bar / Wi-Fi Speaker, connectée au même réseau que Gladys. Certains modèles récents pilotés uniquement par **LG ThinQ** n’ouvrent pas le port 9741 et ne peuvent pas fonctionner.
 - Idéalement, une adresse IP fixe pour la barre de son (une réservation DHCP dans votre box).
 
@@ -41,7 +41,12 @@ Ouvrez l’onglet **Découverte** de l’intégration et ajoutez votre barre de 
 | Mode nuit, volume automatique, compression dynamique, allumage automatique               | Quand le modèle les a.                                                                                                                                                                                                              |
 | Niveaux du caisson, des enceintes arrière, du canal central, des haut-parleurs verticaux | En dB, dans la plage de la barre de son.                                                                                                                                                                                            |
 | Lecture, morceau, artiste                                                                | Seulement pour la musique envoyée à la barre de son (Chromecast, AirPlay, Spotify Connect…).                                                                                                                                        |
+| Lecteur : morceau, artiste, pochette, volume (%), muet                                   | Pour la boîte **Musique** du tableau de bord, avec la lecture. Le volume est un pourcentage de la plage de la barre de son.                                                                                                         |
 | Signal audio                                                                             | Modèles récents : « DOLBY AUDIO », « PCM », « NO SIGNAL ».                                                                                                                                                                          |
+
+### Boîte Musique
+
+Ajoutez une boîte **Musique** à un tableau de bord et choisissez la barre de son. Quand de la musique lui est envoyée, la boîte affiche le morceau, l’artiste et la pochette, avec lecture / pause, le volume et la sourdine. La barre de son n’indique ni l’album, ni la durée, ni la position, et ne sait pas changer de morceau : ces commandes n’apparaissent pas. Certains modèles ne peuvent pas être mis en pause par le réseau : la boîte n’est alors pas proposée.
 
 ### Widget de tableau de bord
 

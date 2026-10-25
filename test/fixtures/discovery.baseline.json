@@ -157,6 +157,53 @@
           "max": 0,
           "read_only": true,
           "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:music_title",
+          "category": "music",
+          "type": "title",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:music_artist",
+          "category": "music",
+          "type": "artist",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:music_artwork",
+          "category": "music",
+          "type": "artwork",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:music_volume",
+          "category": "music",
+          "type": "volume",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:3a1f9c2e-77b0-4c1d-9e8a-1b2c3d4e5f60:music_mute",
+          "category": "music",
+          "type": "mute",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
         }
       ]
     },
@@ -316,6 +363,53 @@
           "min": 0,
           "max": 0,
           "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:music_title",
+          "category": "music",
+          "type": "title",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:music_artist",
+          "category": "music",
+          "type": "artist",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:music_artwork",
+          "category": "music",
+          "type": "artwork",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:music_volume",
+          "category": "music",
+          "type": "volume",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true
+        },
+        {
+          "external_id": "ext:test-integration:soundbar:0f0e0d0c-77b0-4c1d-9e8a-1b2c3d4e5f60:music_mute",
+          "category": "music",
+          "type": "mute",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
           "has_feedback": true
         },
         {

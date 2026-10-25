@@ -5,7 +5,7 @@
 [![Lizenz: Apache-2.0](https://img.shields.io/badge/Lizenz-Apache--2.0-blue.svg)](LICENSE)
 [![Neueste Version](https://img.shields.io/github/v/release/William-De71/gladys-lg-soundbar?sort=semver)](https://github.com/William-De71/gladys-lg-soundbar/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/William-De71/gladys-lg-soundbar/release.yml?branch=main&label=CI)](https://github.com/William-De71/gladys-lg-soundbar/actions/workflows/release.yml)
-[![Gladys](https://img.shields.io/badge/Gladys-%E2%89%A5%205.1.0-2f6fb5)](https://gladysassistant.com)
+[![Gladys](https://img.shields.io/badge/Gladys-%E2%89%A5%205.3.0-2f6fb5)](https://gladysassistant.com)
 
 ![LG Soundbar für Gladys Assistant](cover.jpg)
 
@@ -19,6 +19,7 @@ Nicht mit LG Electronics verbunden. **Noch nicht mit einer echten Soundbar getes
 
 - **Soundbars werden selbst gefunden** (mDNS über Gladys: LG- und Chromecast-Ankündigungen) oder über ihre IP-Adresse.
 - **Ein Gerät pro Soundbar**, mit dem, was das Modell meldet: Ein/Aus, Lautstärke (auf das Maximum der Soundbar begrenzt), Stummschaltung, Eingang und Klangmodus (Listen von der Soundbar gelesen), Nachtmodus, automatische Lautstärke, Dynamikkompression, automatisches Einschalten, Pegel von Subwoofer / Rücklautsprechern / Center / Höhenlautsprechern in dB, Wiedergabe / Pause, Titel und Interpret beim Streamen, Audiosignal.
+- **Musik-Box von Gladys 5.3**: Während Musik an die Soundbar gestreamt wird (Chromecast, AirPlay, Spotify Connect…), zeigt die **Musik**-Box des Dashboards Titel, Interpret und Cover, mit Wiedergabe / Pause, Lautstärke und Stummschaltung. Was temescal nicht liefert (Album, Dauer, Position, nächster / vorheriger Titel, Zufall, Wiederholung), wird nicht angezeigt.
 - **Gemeldet, nicht abgefragt**: eine gehaltene Verbindung pro Soundbar; eine Änderung mit der Fernbedienung, dem Fernseher (HDMI CEC) oder der LG-App ist in weniger als einer Sekunde in Gladys. Eine Soundbar im Standby wird nie abgefragt, denn eine Anfrage würde sie einschalten.
 - **5 Szenen-Auslöser** (Eingang geändert, Klangmodus geändert, neuer Titel, Soundbar nicht erreichbar, wieder erreichbar), **2 Szenen-Aktionen** (Klangvoreinstellung anwenden, Lautstärke um Stufen ändern) und **1 Dashboard-Widget** (Zustand, Cover des Titels, kleine Fernbedienung).
 - Nur lokal: kein Konto, keine Cloud, nichts verlässt dein Netzwerk.
@@ -69,18 +70,19 @@ sequenceDiagram
 
 ## Geräte und Funktionen
 
-| Funktion                                                            | Gladys-Typ              | Hinweise                                                                                                                                                                                                 |
-| ------------------------------------------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ein/Aus                                                             | television / binary     | `b_powerkey`; von neuen Modellen gemeldet (`b_powerstatus`), sonst **angenommen** (letzter Befehl, an bei Benutzung, aus wenn nicht erreichbar). Manche Modelle ignorieren „Aus“ über das Netzwerk.      |
-| Lautstärke                                                          | television / volume     | von 0 bis zum Maximum der Soundbar (oft 40)                                                                                                                                                              |
-| Stummschaltung                                                      | switch / binary         | 1 = stumm                                                                                                                                                                                                |
-| Eingang                                                             | text / select           | von der Soundbar aufgelistete Eingänge (Wi-Fi, Bluetooth, Optisch / HDMI ARC, HDMI…); ein nicht aufgelisteter aktueller Eingang erscheint als sein aufgelistetes Gegenstück (E-ARC → Optisch / HDMI ARC) |
-| Klangmodus                                                          | text / select           | von der Soundbar aufgelistete Klangmodi (AI Sound Pro, Standard, Kino, Musik…)                                                                                                                           |
-| Nachtmodus, automatische Lautstärke, DRC, automatisches Einschalten | switch / binary         | wenn das Modell sie meldet                                                                                                                                                                               |
-| Pegel von Subwoofer, hinten, Center, Höhe                           | television / volume, dB | der Bereich der Soundbar (−15 bis +6 dB für den Subwoofer einer SP8YA)                                                                                                                                   |
-| Wiedergabe                                                          | music / playback_state  | 1 läuft, 0 Pause; nur für an die Soundbar gestreamte Musik                                                                                                                                               |
-| Titel, Interpret                                                    | text                    | beim Streamen (Chromecast, AirPlay, Spotify Connect…)                                                                                                                                                    |
-| Audiosignal                                                         | text                    | neue Modelle: „DOLBY AUDIO“, „PCM“, „NO SIGNAL“                                                                                                                                                          |
+| Funktion                                                            | Gladys-Typ                                   | Hinweise                                                                                                                                                                                                 |
+| ------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ein/Aus                                                             | television / binary                          | `b_powerkey`; von neuen Modellen gemeldet (`b_powerstatus`), sonst **angenommen** (letzter Befehl, an bei Benutzung, aus wenn nicht erreichbar). Manche Modelle ignorieren „Aus“ über das Netzwerk.      |
+| Lautstärke                                                          | television / volume                          | von 0 bis zum Maximum der Soundbar (oft 40)                                                                                                                                                              |
+| Stummschaltung                                                      | switch / binary                              | 1 = stumm                                                                                                                                                                                                |
+| Eingang                                                             | text / select                                | von der Soundbar aufgelistete Eingänge (Wi-Fi, Bluetooth, Optisch / HDMI ARC, HDMI…); ein nicht aufgelisteter aktueller Eingang erscheint als sein aufgelistetes Gegenstück (E-ARC → Optisch / HDMI ARC) |
+| Klangmodus                                                          | text / select                                | von der Soundbar aufgelistete Klangmodi (AI Sound Pro, Standard, Kino, Musik…)                                                                                                                           |
+| Nachtmodus, automatische Lautstärke, DRC, automatisches Einschalten | switch / binary                              | wenn das Modell sie meldet                                                                                                                                                                               |
+| Pegel von Subwoofer, hinten, Center, Höhe                           | television / volume, dB                      | der Bereich der Soundbar (−15 bis +6 dB für den Subwoofer einer SP8YA)                                                                                                                                   |
+| Wiedergabe                                                          | music / playback_state                       | 1 läuft, 0 Pause; nur für an die Soundbar gestreamte Musik                                                                                                                                               |
+| Titel, Interpret                                                    | text                                         | beim Streamen (Chromecast, AirPlay, Spotify Connect…)                                                                                                                                                    |
+| Player: Titel, Interpret, Cover, Lautstärke (%), Stummschaltung     | music / title, artist, artwork, volume, mute | für die **Musik**-Box von Gladys 5.3, zusammen mit der Wiedergabe; leere Texte, wenn nichts gestreamt wird; das Cover nur von der Soundbar selbst; die Lautstärke in Prozent ihres Bereichs              |
+| Audiosignal                                                         | text                                         | neue Modelle: „DOLBY AUDIO“, „PCM“, „NO SIGNAL“                                                                                                                                                          |
 
 ## Szenen-Auslöser, Aktionen und Widgets
 
@@ -117,7 +119,7 @@ Beispiele:
 
 ## Voraussetzungen
 
-- Gladys Assistant **5.1.0** oder neuer (Dashboard-Widgets und Szenen-Auslöser / -Aktionen): Ältere Instanzen können die Integration nicht installieren.
+- Gladys Assistant **5.3.0** oder neuer (die Musik-Box; Dashboard-Widgets und Szenen-Auslöser / -Aktionen seit 5.1.0): Ältere Instanzen können die Integration nicht installieren.
 - Eine LG-WLAN-Soundbar, eingerichtet mit der App **LG Sound Bar** oder **Wi-Fi Speaker**, im selben Netzwerk wie Gladys (oder von dort über TCP 9741 erreichbar). Manche neuen Modelle, die nur über **LG ThinQ** gesteuert werden, öffnen Port 9741 nicht (python-temescal-Issue #14): Sie funktionieren nicht.
 - Eine feste IP-Adresse für die Soundbar (DHCP-Reservierung) ist am besten; die Integration folgt einer Soundbar mit neuer Adresse, indem sie erneut sucht.
 

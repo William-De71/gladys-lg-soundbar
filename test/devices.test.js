@@ -19,7 +19,9 @@ import {
   deviceName,
   featureSpecs,
   featureValues,
+  nowPlaying,
   sourceOptions,
+  volumePercent,
 } from '../src/devices.js';
 import { LANGUAGES } from '../src/i18n.js';
 import { profileData } from './helpers/fake-soundbar.js';
@@ -36,7 +38,9 @@ const keysOf = (device) => device.features.map((feature) => feature.external_id.
 
 // The pairs the integration may use, and why (front DeviceRow of Gladys):
 // binary -> on/off switch, volume -> slider, text/select -> dynamic select,
-// music/playback_state -> play/pause (master) or a value (5.1, 5.2), text -> value.
+// music/playback_state -> play/pause (master) or a value (5.1, 5.2), text -> value;
+// the music types of the music box (5.3): title, artist, artwork as texts,
+// volume as a slider, mute as a switch.
 const PAIRS = new Set([
   `${CATEGORIES.TELEVISION}/${TYPES.TELEVISION.BINARY}`,
   `${CATEGORIES.TELEVISION}/${TYPES.TELEVISION.VOLUME}`,
@@ -44,6 +48,11 @@ const PAIRS = new Set([
   `${CATEGORIES.TEXT}/${TYPES.TEXT.SELECT}`,
   `${CATEGORIES.TEXT}/${TYPES.TEXT.TEXT}`,
   `${CATEGORIES.MUSIC}/${TYPES.MUSIC.PLAYBACK_STATE}`,
+  `${CATEGORIES.MUSIC}/${TYPES.MUSIC.TITLE}`,
+  `${CATEGORIES.MUSIC}/${TYPES.MUSIC.ARTIST}`,
+  `${CATEGORIES.MUSIC}/${TYPES.MUSIC.ARTWORK}`,
+  `${CATEGORIES.MUSIC}/${TYPES.MUSIC.VOLUME}`,
+  `${CATEGORIES.MUSIC}/${TYPES.MUSIC.MUTE}`,
 ]);
 
 test('every feature carries what Gladys requires, from SDK constants, without polling', () => {
@@ -93,6 +102,11 @@ test('the SP8YA: assumed power, no audio signal, three levels, a select of 4 inp
     'playback',
     'title',
     'artist',
+    'music_title',
+    'music_artist',
+    'music_artwork',
+    'music_volume',
+    'music_mute',
   ]);
   const byKey = Object.fromEntries(device.features.map((f) => [f.external_id.split(':').pop(), f]));
   assert.equal(byKey.power.has_feedback, false, 'no b_powerstatus: assumed');
@@ -197,4 +211,29 @@ test('the fake Gladys accepts the discovered devices and their states', async ()
     'NO SIGNAL',
   );
   await fake.disconnect();
+});
+
+test('now playing: the music features it has, empty texts when nothing plays', () => {
+  const sp8ya = stateOf('SP8YA');
+  assert.deepEqual(nowPlaying({ state: sp8ya, host: '192.168.1.20' }), {
+    playback_state: 0,
+    title: '',
+    artist: '',
+    artwork_url: null,
+    volume: 18,
+    mute: 0,
+  });
+  const s90 = stateOf('S90QY');
+  s90.play.albumArt = 'http://192.168.1.21/art.jpg';
+  const playing = nowPlaying({ state: s90, host: '192.168.1.21' });
+  assert.equal(playing.playback_state, 1);
+  assert.match(playing.title, /^Sinfonia/);
+  assert.equal(playing.artwork_url, 'http://192.168.1.21/art.jpg');
+  assert.equal(nowPlaying({ state: s90, host: '192.168.1.99' }).artwork_url, null, 'elsewhere');
+  s90.play.albumArt = 'https://192.168.1.21/art.jpg';
+  assert.equal(nowPlaying({ state: s90, host: '192.168.1.21' }).artwork_url, null, 'https');
+  assert.equal(nowPlaying({ state: emptyState(), host: '192.168.1.20' }), null, 'no player');
+  assert.equal(volumePercent({ volume: 7, volumeMin: 0, volumeMax: 40 }), 18);
+  assert.equal(volumePercent({ volume: 40, volumeMin: 0, volumeMax: 40 }), 100);
+  assert.equal(volumePercent({ volume: null, volumeMax: 40 }), null);
 });
