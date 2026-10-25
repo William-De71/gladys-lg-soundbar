@@ -78,8 +78,6 @@ test('the music box needs Gladys 5.3.0; only the mDNS discovery permission', () 
     'containers',
     'webhooks',
     'messaging',
-    'keywords',
-    'countries',
     'energy_contracts',
   ]) {
     assert.equal(manifest[key], undefined, `${key} (permission, or a newer Gladys)`);
@@ -207,4 +205,17 @@ test('the catalog description fits 10 to 100 characters in every language', () =
     const length = manifest.description[language].length;
     assert.ok(length >= 10 && length <= 100, `${language}: ${length}`);
   }
+});
+
+test('catalog keywords (Gladys 5.3.0), worldwide', () => {
+  const { keywords } = manifest;
+  assert.ok(Array.isArray(keywords) && keywords.length >= 1 && keywords.length <= 10);
+  for (const keyword of keywords) {
+    assert.ok(keyword.trim().length >= 2 && keyword.trim().length <= 30, keyword);
+  }
+  const normalized = keywords.map((keyword) => keyword.trim().toLowerCase());
+  assert.equal(new Set(normalized).size, normalized.length);
+  assert.ok(!normalized.includes(manifest.name.toLowerCase()));
+  // LG sells these soundbars worldwide and they talk on the LAN only.
+  assert.equal(manifest.countries, undefined);
 });
