@@ -5,6 +5,12 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/). This file is generated at
 each release from the Conventional Commits: do not edit it by hand.
 
+## [0.3.0] - 2026-10-25
+
+### Added
+
+- declare catalog keywords for Gladys 5.3 ([c0eb653](https://github.com/William-De71/gladys-lg-soundbar/commit/c0eb6531241adb7135562019af08143337c91716))
+
 ## [0.2.0] - 2026-10-25
 
 ### Added
@@ -28,6 +34,7 @@ each release from the Conventional Commits: do not edit it by hand.
 - **widgets:** the soundbar widget: volume, subwoofer, power, input, sound mode, night mode, audio signal, the track and its cover while streaming, and volume, mute and power buttons
 - **i18n:** English, French, German and Spanish for the manifest, the runtime texts, the documentation and the README
 
+[0.3.0]: https://github.com/William-De71/gladys-lg-soundbar/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/William-De71/gladys-lg-soundbar/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/William-De71/gladys-lg-soundbar/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/William-De71/gladys-lg-soundbar/releases/tag/v0.1.0
