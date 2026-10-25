@@ -1,6 +1,6 @@
 {
   "name": "gladys-lg-soundbar",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "description": "External Gladys Assistant integration for LG Wi-Fi soundbars on the local network (temescal protocol, port 9741): power, volume, mute, input, sound mode, night mode, speaker levels, now playing, scenes and a dashboard widget.",
   "homepage": "https://github.com/William-De71/gladys-lg-soundbar",
